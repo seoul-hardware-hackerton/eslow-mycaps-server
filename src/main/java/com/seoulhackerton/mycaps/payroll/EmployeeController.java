@@ -13,12 +13,6 @@ class EmployeeController {
     EmployeeController(EmployeeRepository repository) {
         this.repository = repository;
     }
-
-    @GetMapping("/")
-    String welcome() {
-        return "Welcome mycaps world";
-    }
-
     // Aggregate root
     @GetMapping("/employees")
     List<Employee> all() {
