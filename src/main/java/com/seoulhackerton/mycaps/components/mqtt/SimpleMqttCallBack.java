@@ -1,4 +1,4 @@
-package com.seoulhackerton.mycaps.hello;
+package com.seoulhackerton.mycaps.components.mqtt;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;

@@ -1,7 +1,8 @@
 package com.seoulhackerton.mycaps.payroll;
 
+import com.seoulhackerton.mycaps.domain.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 }

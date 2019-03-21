@@ -1,4 +1,4 @@
-package com.seoulhackerton.mycaps.payroll;
+package com.seoulhackerton.mycaps.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import javax.persistence.GeneratedValue;
 @Data
 @Entity
 @NoArgsConstructor
-class Employee {
+public class Employee {
 
     private @Id
     @GeneratedValue
@@ -19,7 +19,7 @@ class Employee {
     private String name;
     private String role;
 
-    Employee(String name, String role) {
+    public Employee(String name, String role) {
         this.name = name;
         this.role = role;
     }

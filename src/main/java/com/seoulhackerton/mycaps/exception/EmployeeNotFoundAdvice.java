@@ -1,5 +1,6 @@
-package com.seoulhackerton.mycaps.payroll;
+package com.seoulhackerton.mycaps.exception;
 
+import com.seoulhackerton.mycaps.exception.EmployeeNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

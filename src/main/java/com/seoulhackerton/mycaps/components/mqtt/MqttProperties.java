@@ -1,4 +1,4 @@
-package com.seoulhackerton.mycaps.components;
+package com.seoulhackerton.mycaps.components.mqtt;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

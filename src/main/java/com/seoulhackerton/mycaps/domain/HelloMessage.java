@@ -1,4 +1,4 @@
-package com.seoulhackerton.mycaps.hello;
+package com.seoulhackerton.mycaps.domain;
 
 public class HelloMessage {
 

@@ -1,6 +1,9 @@
-package com.seoulhackerton.mycaps.payroll;
+package com.seoulhackerton.mycaps.controller;
 
 
+import com.seoulhackerton.mycaps.domain.Employee;
+import com.seoulhackerton.mycaps.exception.EmployeeNotFoundException;
+import com.seoulhackerton.mycaps.payroll.EmployeeRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +16,7 @@ class EmployeeController {
     EmployeeController(EmployeeRepository repository) {
         this.repository = repository;
     }
+
     // Aggregate root
     @GetMapping("/employees")
     List<Employee> all() {
@@ -50,6 +54,6 @@ class EmployeeController {
         repository.deleteById(id);
     }
 
-    void test(){
+    void test() {
     }
 }

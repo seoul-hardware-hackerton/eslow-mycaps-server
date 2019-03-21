@@ -1,4 +1,4 @@
-package com.seoulhackerton.mycaps.components;
+package com.seoulhackerton.mycaps.components.mqtt;
 
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;

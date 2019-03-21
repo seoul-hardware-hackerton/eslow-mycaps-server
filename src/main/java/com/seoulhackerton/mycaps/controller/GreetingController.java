@@ -1,6 +1,8 @@
-package com.seoulhackerton.mycaps.hello;
+package com.seoulhackerton.mycaps.controller;
 
-import com.seoulhackerton.mycaps.components.MqttPublishClient;
+import com.seoulhackerton.mycaps.components.mqtt.MqttPublishClient;
+import com.seoulhackerton.mycaps.domain.Greeting;
+import com.seoulhackerton.mycaps.domain.HelloMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;

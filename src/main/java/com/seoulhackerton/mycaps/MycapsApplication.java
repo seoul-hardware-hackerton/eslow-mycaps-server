@@ -1,6 +1,6 @@
 package com.seoulhackerton.mycaps;
 
-import com.seoulhackerton.mycaps.hello.SimpleMqttCallBack;
+import com.seoulhackerton.mycaps.components.mqtt.SimpleMqttCallBack;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.boot.SpringApplication;
