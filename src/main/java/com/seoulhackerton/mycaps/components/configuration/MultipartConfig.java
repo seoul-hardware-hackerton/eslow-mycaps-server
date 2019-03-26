@@ -23,5 +23,4 @@ public class MultipartConfig {
         multipartFilter.setMultipartResolverBeanName("multipartResolver");
         return multipartFilter;
     }
-
 }
