@@ -1,6 +1,6 @@
 package com.seoulhackerton.mycaps.controller;
 
-import com.seoulhackerton.mycaps.components.mqtt.MqttPublishClient;
+import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import com.seoulhackerton.mycaps.domain.Greeting;
 import com.seoulhackerton.mycaps.domain.HelloMessage;
 import org.apache.log4j.Logger;

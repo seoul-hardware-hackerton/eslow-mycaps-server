@@ -1,10 +1,14 @@
-package com.seoulhackerton.mycaps.components.mqtt;
+package com.seoulhackerton.mycaps.service;
 
+import com.seoulhackerton.mycaps.components.mqtt.MqttProperties;
 import org.apache.log4j.Logger;
-import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  *
@@ -12,7 +16,8 @@ import org.springframework.stereotype.Component;
  * target/client-1.0-SNAPSHOT.jar:org.eclipse.paho.client.mqttv3-1.0.2.jar:.
  * it.david.mqtt.client.MqttPublishClient test aaa
  */
-@Component
+
+@Service
 public class MqttPublishClient {
 
     private static final Logger logger = Logger.getLogger(MqttPublishClient.class);
