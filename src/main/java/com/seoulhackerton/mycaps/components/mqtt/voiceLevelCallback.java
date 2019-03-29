@@ -12,12 +12,15 @@ public class voiceLevelCallback implements MqttCallback {
 
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         //TODO 음성 레벨 테스트 필요.
-        int level = Integer.parseInt(new String(mqttMessage.getPayload()));
-        if (level >= 2) {
-            notifyToTelegram();
-            notifyToMbed();
+//        int level = Integer.parseInt(new String(mqttMessage.getPayload()));
+//        if (level >= 2) {
+//            notifyToTelegram();
+//            notifyToMbed();
+//        }
+        byte[] abc = mqttMessage.getPayload();
+        for (int i = 0; i < mqttMessage.getPayload().length; i++) {
+            System.out.println("Message received:\n\t" + abc[i]);
         }
-        System.out.println("Message received:\n\t" + new String(mqttMessage.getPayload()));
     }
 
     private void notifyToMbed() {
