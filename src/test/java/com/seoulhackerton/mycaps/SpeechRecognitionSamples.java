@@ -197,11 +197,12 @@ public class SpeechRecognitionSamples {
         // Creates an instance of a speech config with specified
         // subscription key and service region. Replace with your own subscription key
         // and service region (e.g., "westus").
-        SpeechConfig config = SpeechConfig.fromSubscription("762a4281d7934ec5bfddedc73fa98cd9", "https://eastasia.api.cognitive.microsoft.com/sts/v1.0/issuetoken");
+        SpeechConfig config = SpeechConfig.fromSubscription("7945c92e48ec4baf806549e85850e8fe", "eastasia");
 
         // Create an audio stream from a wav file.
         // Replace with your own audio file name.
-        PullAudioInputStreamCallback callback = new WavStream(new FileInputStream("/Users/lenkim/toy-project/mycaps/attachments/whatstheweatherlike.wav"));
+        PullAudioInputStreamCallback callback = new WavStream(new FileInputStream("/home/eslow/eslow-mycaps-server/attachments/whatstheweatherlike.wav"));
+
         AudioConfig audioInput = AudioConfig.fromStreamInput(callback);
 
         // Creates a speech recognizer using audio stream input.
