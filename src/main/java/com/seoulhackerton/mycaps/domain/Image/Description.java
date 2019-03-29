@@ -12,11 +12,21 @@ public class Description {
     @JsonProperty("captions")
     ArrayList<Captions> captions;
 
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public ArrayList<Captions> getCaptions() {
+        return captions;
+    }
+
     @Override
     public String toString() {
-        return "Description{" +
-                "tags=" + tags +
-                ", captions=" + captions +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("Result Tags: ");
+        for (String tag : tags) {
+            sb.append(tag).append(", ");
+        }
+        return sb.toString();
     }
 }

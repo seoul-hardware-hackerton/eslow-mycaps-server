@@ -46,7 +46,6 @@ public class MqttPublishClient {
             logger.info("send(): Publishing message: " + content + " to topic: " + topic);
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(Integer.parseInt(mqttProperties.getQos()));
-//            http://www.hivemq.com/blog/mqtt-essentials-part-8-retained-messages
             message.setRetained(Boolean.FALSE);
 
             sampleClient.publish(topic, message);

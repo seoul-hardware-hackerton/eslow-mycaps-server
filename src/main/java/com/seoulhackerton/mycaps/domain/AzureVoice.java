@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:azureimage.properties")
-public class AzureImage {
+@PropertySource("classpath:azurevoice.properties")
+public class AzureVoice {
 
     @Value("${eslow.subscriptionkey}")
     private String subscriptionKey;

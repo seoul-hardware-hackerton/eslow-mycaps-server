@@ -22,6 +22,26 @@ public class ImageRes {
     @JsonProperty("message")
     String message;
 
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public String toString() {
         return "ImageRes{" +

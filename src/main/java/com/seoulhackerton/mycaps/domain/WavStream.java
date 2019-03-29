@@ -1,4 +1,4 @@
-package com.seoulhackerton.mycaps;
+package com.seoulhackerton.mycaps.domain;
 
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
 
@@ -9,7 +9,7 @@ public class WavStream extends PullAudioInputStreamCallback {
 
     private final InputStream stream;
 
-    WavStream(InputStream wavStream) {
+    public WavStream(InputStream wavStream) {
         try {
             this.stream = parseWavHeader(wavStream);
         } catch (Exception ex) {
@@ -27,7 +27,7 @@ public class WavStream extends PullAudioInputStreamCallback {
             System.out.println("Read " + ex);
         }
 
-        return (int) Math.max(0, ret);
+        return (int)Math.max(0, ret);
     }
 
     @Override
@@ -73,8 +73,7 @@ public class WavStream extends PullAudioInputStreamCallback {
         ThrowIfFalse((numRead == 4) && (data[0] == 'R') && (data[1] == 'I') && (data[2] == 'F') && (data[3] == 'F'), "RIFF");
 
         // Chunk size
-        /* int fileLength = */
-        ReadInt32(reader);
+        /* int fileLength = */ReadInt32(reader);
 
         // Subchunk, Wave Header
         // Subchunk, Format
@@ -105,7 +104,7 @@ public class WavStream extends PullAudioInputStreamCallback {
         // for now.
         if (formatSize > 16) {
             numRead = reader.read(new byte[(int) (formatSize - 16)]);
-            ThrowIfFalse(numRead == (int) (formatSize - 16), "could not skip extended format");
+            ThrowIfFalse(numRead == (int)(formatSize - 16), "could not skip extended format");
         }
 
         // Second Chunk, data
@@ -115,8 +114,7 @@ public class WavStream extends PullAudioInputStreamCallback {
 
         // data chunk size
         // Note: assumption is that only a single data chunk
-        /* int dataLength = */
-        ReadInt32(reader);
+        /* int dataLength = */ReadInt32(reader);
         return reader;
     }
 

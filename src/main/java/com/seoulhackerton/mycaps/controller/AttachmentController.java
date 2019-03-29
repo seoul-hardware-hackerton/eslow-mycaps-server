@@ -1,13 +1,14 @@
 package com.seoulhackerton.mycaps.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seoulhackerton.mycaps.Constant;
 import com.seoulhackerton.mycaps.Util;
 import com.seoulhackerton.mycaps.domain.AzureImage;
 import com.seoulhackerton.mycaps.domain.Image.ImageRes;
+import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -34,11 +35,12 @@ public class AttachmentController {
 
     private static final Logger logger = Logger.getLogger(AttachmentController.class);
 
+
+    private MqttPublishClient sendMqttAlarm;
+
     @Autowired
     AzureImage imageConfig;
 
-    private static final String uriBase =
-            "https://koreacentral.api.cognitive.microsoft.com/vision/v2.0/analyze";
 
     @RequestMapping(value = "/file", method = RequestMethod.POST)
     public @ResponseBody
@@ -46,23 +48,21 @@ public class AttachmentController {
 
         String sourceFileName = sourceFile.getOriginalFilename();
         String sourceFilenameExtension = FilenameUtils.getExtension(sourceFileName);
-
         File destinationFile;
         String destinationFileName;
 
         do {
-            destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFilenameExtension;
+            destinationFileName = sourceFileName + "." + sourceFilenameExtension;
 //            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
             destinationFile = new File("/Users/lenkim/toy-project/mycaps/attachments/" + destinationFileName);
         } while (destinationFile.exists());
-
-//        임시 저장
+        //TODO sourceFile 로 바로 다이렉트로 꽂히게 수정할 것.
         sourceFile.transferTo(destinationFile);
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
         try {
-            URIBuilder builder = new URIBuilder(uriBase);
+            URIBuilder builder = new URIBuilder(Constant.uriBase);
 
             // Request parameters. All of them are optional.
             builder.setParameter("visualFeatures", "Categories,Description,Color");
@@ -73,7 +73,6 @@ public class AttachmentController {
             HttpPost request = new HttpPost(uri);
 
             // Request headers.
-//             sourceFile.getBytes();
             byte[] a = Util.readBytesFromFile(destinationFile.getAbsolutePath());
             request.setHeader("Content-Type", "application/octet-stream");
             request.setHeader("Ocp-Apim-Subscription-Key", imageConfig.getSubscriptionKey());
@@ -91,20 +90,22 @@ public class AttachmentController {
                 ImageRes value = mapper.readValue(jsonString, ImageRes.class);
                 System.out.println("REST Response:\n");
                 System.out.println(value.toString());
+                //TODO 이미지 테스트해서 나오는 결과값으로 롤 설정. / Telegram Message Send. 위험하다는 메세지.
+                if (value.getDescription().getTags().contains("laying")) {
+                    sendMqttAlarm.send(Constant.IMAGE_MQTT_TOPIC, "Dangerous" + value.getDescription().getTags().toString());
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        UploadAttachmentResponse response2 = new UploadAttachmentResponse();
-        response2.setFileName(sourceFile.getOriginalFilename());
-        response2.setFileSize(sourceFile.getSize());
-        response2.setFileContentType(sourceFile.getContentType());
-        response2.setAttachmentUrl("http://localhost:9000/attachments/" + destinationFileName);
+        UploadAttachmentResponse attachmentResponse = new UploadAttachmentResponse();
+        attachmentResponse.setFileName(sourceFile.getOriginalFilename());
+        attachmentResponse.setFileSize(sourceFile.getSize());
+        attachmentResponse.setFileContentType(sourceFile.getContentType());
+        attachmentResponse.setAttachmentUrl("http://localhost:9000/attachments/" + destinationFileName);
         logger.trace(imageConfig.getSubscriptionKey());
-        logger.trace(imageConfig.getUrlBase());
 
-        return new ResponseEntity<>(response2, HttpStatus.OK);
-
+        return new ResponseEntity<>(attachmentResponse, HttpStatus.OK);
     }
 
     @NoArgsConstructor
