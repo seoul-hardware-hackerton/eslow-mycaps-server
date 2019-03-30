@@ -46,7 +46,7 @@ public class SpeechRecognitionSamples {
     @Autowired
     static CoreTelegramService messageService;
 
-    private static void sendTelegram(String text) {
+    private void sendTelegram(String text) {
         System.out.println("sendTelegram");
         String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
         String sb = url + URLEncoder.encode(text);
@@ -54,7 +54,7 @@ public class SpeechRecognitionSamples {
     }
 
     // Speech recognition with audio stream
-    public static void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
+    public void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
 
         stopRecognitionSemaphore = new Semaphore(0);
 
@@ -124,6 +124,7 @@ public class SpeechRecognitionSamples {
         }
     }
 }
+
 class MqttPublishClient2 {
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(com.seoulhackerton.mycaps.service.MqttPublishClient.class);

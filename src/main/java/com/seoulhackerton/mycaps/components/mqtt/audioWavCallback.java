@@ -36,7 +36,8 @@ public class audioWavCallback implements MqttCallback {
         }
         System.out.println("Audio Message received:\n\t");
         System.out.println(destinationFile.getAbsolutePath());
-        SpeechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
+        SpeechRecognitionSamples speechRecognitionSamples = new SpeechRecognitionSamples();
+        speechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
