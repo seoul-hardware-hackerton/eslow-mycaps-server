@@ -24,7 +24,13 @@ public class MycapsApplication {
         String url = Constant.ServerURI;
         String topic = Constant.AUDIO_MQTT_TOPIC;
         MqttCallback callback = new audioWavCallback();
-        setMqttConfig(url, topic, callback);
+        MqttClient client = new MqttClient(url, MqttClient.generateClientId());
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        options.setCleanSession(true);
+        client.connect(options);
+        client.setCallback(callback);
+        client.subscribe(topic);
     }
 
     private static void voiceLevelSubscribe() throws MqttException {
