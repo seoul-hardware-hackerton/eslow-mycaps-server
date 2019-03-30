@@ -55,7 +55,7 @@ public class SpeechRecognitionSamples {
 
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
-
+        MqttPublishClient2 client2 = new MqttPublishClient2();
         stopRecognitionSemaphore = new Semaphore(0);
 //        MqttPublishClient2 client = new MqttPublishClient2();
         SpeechConfig config = SpeechConfig.fromSubscription("06a7558e68a142f8838f80035deb6ad3", "koreacentral");
@@ -70,19 +70,20 @@ public class SpeechRecognitionSamples {
             // Subscribes to events.
             recognizer.recognizing.addEventListener((s, e) -> {
                 System.out.println("RECOGNIZING: Text=" + e.getResult().getText());
+                if(e.getResult().getText().contains("help")){
+                    client2.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
+                } else {
+                    client2.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
+                }
             });
 
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
-                    sendTelegram("GGGGG");
                     if (e.getResult().getText().contains("help")) {
-
-                        //텔레그램으로 살려줘 보내고 text를 가져옴
-                        //TELEGRAM
-//                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
+                        client2.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
                         System.out.println(e.getResult().getText());
                     } else {
-//                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
+                        client2.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
                     }
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
                 } else if (e.getResult().getReason() == ResultReason.NoMatch) {
