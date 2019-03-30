@@ -53,7 +53,7 @@ public class SpeechRecognitionSamples {
         // Creates an instance of a speech config with specified
         // subscription key and service region. Replace with your own subscription key
         // and service region (e.g., "westus").
-        SpeechConfig config = SpeechConfig.fromSubscription("7945c92e48ec4baf806549e85850e8fe", "eastasia");
+        SpeechConfig config = SpeechConfig.fromSubscription("1201845b3cf0469392de0f164dcd9a31", "koreacentral");
 
         // Create an audio stream from a wav file.
         // Replace with your own audio file name.

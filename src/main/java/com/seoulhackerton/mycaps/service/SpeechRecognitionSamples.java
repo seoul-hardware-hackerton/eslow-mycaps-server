@@ -58,7 +58,7 @@ public class SpeechRecognitionSamples {
     public void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
 
 //        MqttPublishClient2 client = new MqttPublishClient2();
-        SpeechConfig config = SpeechConfig.fromSubscription("4cedbee81eca48d6af6d5d6232864589", "eastasia");
+        SpeechConfig config = SpeechConfig.fromSubscription("06a7558e68a142f8838f80035deb6ad3", "koreacentral");
         System.out.println(filePath);
         PullAudioInputStreamCallback callback = new WavStream(new FileInputStream(filePath));
 
