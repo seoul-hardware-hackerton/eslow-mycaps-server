@@ -23,7 +23,7 @@ public class ImageTest {
 //     **********************************************
 //
 //     Replace <Subscription Key> with your valid subscription key.
-    private static final String subscriptionKey = "f8081eb564f24b4080494119874019af";
+    private static final String subscriptionKey = "06c31f1b012c41db8c8dce11080c6d96";
 //
 //     You must use the same Azure region in your REST API method as you used to
 //     get your subscription keys. For example, if you got your subscription keys

@@ -91,6 +91,7 @@ public class AttachmentController {
                 ImageRes value = mapper.readValue(jsonString, ImageRes.class);
                 System.out.println("REST Response:\n");
                 System.out.println(value.toString());
+                sendAlarm();
                 //TODO 이미지 테스트해서 나오는 결과값으로 롤 설정. / Telegram Message Send. 위험하다는 메세지.
                 if (value.getDescription().getTags().contains("laying")) {
                     sendMqttAlarm.send(Constant.IMAGE_MQTT_TOPIC, "Dangerous" + value.getDescription().getTags().toString());
@@ -107,6 +108,17 @@ public class AttachmentController {
         logger.trace(imageConfig.getSubscriptionKey());
 
         return new ResponseEntity<>(attachmentResponse, HttpStatus.OK);
+    }
+
+    private void sendAlarm() {
+        sendTelegram();
+        sendMqttMbed();
+    }
+
+    private void sendMqttMbed() {
+    }
+
+    private void sendTelegram() {
     }
 
     @NoArgsConstructor
