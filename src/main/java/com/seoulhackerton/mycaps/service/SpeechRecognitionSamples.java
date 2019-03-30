@@ -38,8 +38,7 @@ import java.util.concurrent.Semaphore;
 public class SpeechRecognitionSamples {
 
     // The Source to stop recognition.
-    private static Semaphore stopRecognitionSemaphore = new Semaphore(0);
-    ;
+    private static Semaphore stopRecognitionSemaphore;
 
     @Autowired
     static AzureVoice voiceConfig;
@@ -57,6 +56,7 @@ public class SpeechRecognitionSamples {
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
 
+        stopRecognitionSemaphore = new Semaphore(0);
 //        MqttPublishClient2 client = new MqttPublishClient2();
         SpeechConfig config = SpeechConfig.fromSubscription("06a7558e68a142f8838f80035deb6ad3", "koreacentral");
         System.out.println(filePath);
@@ -65,6 +65,7 @@ public class SpeechRecognitionSamples {
         AudioConfig audioInput = AudioConfig.fromStreamInput(callback);
         // Creates a speech recognizer using audio stream input.
         SpeechRecognizer recognizer = new SpeechRecognizer(config, audioInput);
+
         {
             // Subscribes to events.
             recognizer.recognizing.addEventListener((s, e) -> {
