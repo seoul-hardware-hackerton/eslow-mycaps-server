@@ -54,8 +54,8 @@ public class AttachmentController {
 
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFilenameExtension;
-//            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
-            destinationFile = new File("/Users/lenkim/toy-project/mycaps/attachments/" + destinationFileName);
+            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
+//            destinationFile = new File("/Users/lenkim/toy-project/mycaps/attachments/" + destinationFileName);
         } while (destinationFile.exists());
         //TODO sourceFile 로 바로 다이렉트로 꽂히게 수정할 것.
         sourceFile.transferTo(destinationFile);
