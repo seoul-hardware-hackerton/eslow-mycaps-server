@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,14 +48,14 @@ public class SpeechRecognitionSamples {
         messageService.sendMsg(sb);
     }
     // Speech recognition with audio stream
-    public static void recognitionWithAudioStreamAsync(InputStream is) throws InterruptedException, ExecutionException, FileNotFoundException {
+    public static void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
 
         stopRecognitionSemaphore = new Semaphore(0);
 
         MqttPublishClient client = new MqttPublishClient();
         SpeechConfig config = SpeechConfig.fromSubscription(voiceConfig.getSubscriptionKey(), "eastasia");
 
-        PullAudioInputStreamCallback callback = new WavStream(is);
+        PullAudioInputStreamCallback callback = new WavStream(new FileInputStream(filePath));
 
         AudioConfig audioInput = AudioConfig.fromStreamInput(callback);
         // Creates a speech recognizer using audio stream input.
