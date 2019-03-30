@@ -38,7 +38,8 @@ import java.util.concurrent.Semaphore;
 public class SpeechRecognitionSamples {
 
     // The Source to stop recognition.
-    private static Semaphore stopRecognitionSemaphore;
+    private static Semaphore stopRecognitionSemaphore = new Semaphore(0);
+    ;
 
     @Autowired
     static AzureVoice voiceConfig;
@@ -56,9 +57,7 @@ public class SpeechRecognitionSamples {
     // Speech recognition with audio stream
     public void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
 
-        stopRecognitionSemaphore = new Semaphore(0);
-
-        MqttPublishClient2 client = new MqttPublishClient2();
+//        MqttPublishClient2 client = new MqttPublishClient2();
         SpeechConfig config = SpeechConfig.fromSubscription(voiceConfig.getSubscriptionKey(), "eastasia");
         System.out.println(filePath);
         PullAudioInputStreamCallback callback = new WavStream(new FileInputStream(filePath));
@@ -79,10 +78,10 @@ public class SpeechRecognitionSamples {
 
                         //텔레그램으로 살려줘 보내고 text를 가져옴
                         //TELEGRAM
-                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
+//                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
                         System.out.println(e.getResult().getText());
                     } else {
-                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
+//                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
                     }
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
                 } else if (e.getResult().getReason() == ResultReason.NoMatch) {
