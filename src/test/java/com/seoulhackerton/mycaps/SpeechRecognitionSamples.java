@@ -20,8 +20,6 @@ public class SpeechRecognitionSamples {
     // The Source to stop recognition.
     private static Semaphore stopRecognitionSemaphore;
 
-    @Autowired
-    static MessageService messageService;
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync() throws InterruptedException, ExecutionException, FileNotFoundException {
 
@@ -50,8 +48,6 @@ public class SpeechRecognitionSamples {
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
-                    messageService.sendMsg(e.getResult().getText());
-
                 } else if (e.getResult().getReason() == ResultReason.NoMatch) {
                     System.out.println("NOMATCH: Speech could not be recognized.");
                 }
