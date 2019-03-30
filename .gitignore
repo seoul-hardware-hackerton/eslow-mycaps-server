@@ -2,6 +2,7 @@ HELP.md
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
+WebContent/
 ### STS ###
 .apt_generated
 .classpath
