@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
+import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
 import com.seoulhackerton.mycaps.service.telegram.JsonResult;
 import com.seoulhackerton.mycaps.service.telegram.MessageService;
@@ -42,6 +43,7 @@ public class SpeechRecognitionSamples {
     public void recognitionWithAudioStreamAsync() throws InterruptedException, ExecutionException, FileNotFoundException {
         System.out.println("QQQQQQQQQ");
 
+        MqttPublishClient client = new MqttPublishClient();
         stopRecognitionSemaphore = new Semaphore(0);
         // Creates an instance of a speech config with specified
         // subscription key and service region. Replace with your own subscription key
@@ -64,6 +66,7 @@ public class SpeechRecognitionSamples {
         recognizer.recognized.addEventListener((s, e) -> {
             if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
                 if(e.getResult().getText().contains("like")){
+                    client.send("eslow/alarm", "foo");
                     sendTelegram("foo");
                 }
                 System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
