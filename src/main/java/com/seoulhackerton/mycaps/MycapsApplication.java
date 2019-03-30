@@ -28,7 +28,6 @@ public class MycapsApplication {
         MqttClient client = new MqttClient(url, MqttClient.generateClientId());
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
-        options.setCleanSession(true);
         client.connect(options);
         client.setCallback(callback);
         client.subscribe(topic);

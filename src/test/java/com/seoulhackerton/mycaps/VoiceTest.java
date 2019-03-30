@@ -15,8 +15,8 @@ public class VoiceTest {
     @Test
     public void voiceTest() throws InterruptedException, ExecutionException, FileNotFoundException {
         System.out.println("voiceTest called");
-//        SpeechRecognitionSamples samples = new SpeechRecognitionSamples();
-//        System.out.println("voiceTest called2");
-//        samples.recognitionWithAudioStreamAsync();
+        SpeechRecognitionSamples samples = new SpeechRecognitionSamples();
+        System.out.println("voiceTest called2");
+        samples.recognitionWithAudioStreamAsync();
     }
 }

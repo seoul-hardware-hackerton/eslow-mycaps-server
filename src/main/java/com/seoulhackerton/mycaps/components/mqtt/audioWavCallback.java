@@ -21,11 +21,8 @@ public class audioWavCallback implements MqttCallback {
     }
 
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        //Bytes
-        byte[] wavBytes = mqttMessage.getPayload();
-        mqttMessage.setQos(2);
-        mqttMessage.setRetained(Boolean.FALSE);
 
+        byte[] wavBytes = mqttMessage.getPayload();
         String sourceFilenameExtension = "wav";
         File destinationFile;
         String destinationFileName;
@@ -37,8 +34,8 @@ public class audioWavCallback implements MqttCallback {
             String currentDirectory = System.getProperty("user.dir");
             destinationFile = new File(currentDirectory, destinationFileName);
         } while (destinationFile.exists());
-
         byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
+        System.out.println(destinationFile.getAbsolutePath());
         SpeechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
         System.out.println("Audio Message received:\n\t");
     }
