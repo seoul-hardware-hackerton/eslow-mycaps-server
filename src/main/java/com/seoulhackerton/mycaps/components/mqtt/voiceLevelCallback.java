@@ -1,5 +1,7 @@
 package com.seoulhackerton.mycaps.components.mqtt;
 
+import com.seoulhackerton.mycaps.Constant;
+import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -11,17 +13,28 @@ public class voiceLevelCallback implements MqttCallback {
     }
 
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        //TODO 음성 레벨 테스트 필요.
-//        int level = Integer.parseInt(new String(mqttMessage.getPayload()));
-//        if (level >= 2) {
-//            notifyToTelegram();
-//            notifyToMbed();
-//        }
-        byte[] abc = mqttMessage.getPayload();
-        for (int i = 0; i < mqttMessage.getPayload().length; i++) {
-            System.out.println("VoiceLevel Message received:\n\t" + abc[i]);
+        MqttPublishClient client = new MqttPublishClient();
+        byte[] voiceLevel = mqttMessage.getPayload();
+        for (byte b : voiceLevel) {
+            double a = ((double) (b));
+            System.out.println(a);
+            if (a > 2) {
+                sendAlarm(client);
+            } else {
+                normalAlarm(client);
+            }
         }
     }
+
+    private void normalAlarm(MqttPublishClient client) {
+        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
+    }
+
+    private void sendAlarm(MqttPublishClient client) {
+        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
+        //TODO 텔레그램, MQTT 알람.
+    }
+
 
     private void notifyToMbed() {
         //TODO MBed

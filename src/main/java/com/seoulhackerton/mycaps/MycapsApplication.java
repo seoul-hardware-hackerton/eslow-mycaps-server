@@ -34,6 +34,7 @@ public class MycapsApplication {
         MqttCallback callback = new voiceLevelCallback();
         setMqttConfig(url, topic, callback);
     }
+
     private static void setMqttConfig(String url, String topic, MqttCallback callback) throws MqttException {
         MqttClient client = new MqttClient(url, MqttClient.generateClientId());
         MqttConnectOptions options = new MqttConnectOptions();

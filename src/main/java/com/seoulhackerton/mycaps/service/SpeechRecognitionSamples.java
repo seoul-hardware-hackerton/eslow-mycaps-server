@@ -6,6 +6,7 @@ import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
+import com.seoulhackerton.mycaps.Constant;
 import com.seoulhackerton.mycaps.domain.AzureVoice;
 import com.seoulhackerton.mycaps.domain.WavStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class SpeechRecognitionSamples {
 
         stopRecognitionSemaphore = new Semaphore(0);
 
+        MqttPublishClient client = new MqttPublishClient();
         SpeechConfig config = SpeechConfig.fromSubscription(voiceConfig.getSubscriptionKey(), "eastasia");
 
         PullAudioInputStreamCallback callback = new WavStream(is);
@@ -45,10 +47,14 @@ public class SpeechRecognitionSamples {
 
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
-                    if(e.getResult().getText().contains("help")){
+                    if (e.getResult().getText().contains("help")) {
+                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_LED_RED));
                         //TODO 텔레그램 으로 살려줘 보내기.
                         //TODO MQTT로 전송
                         String sttResult = e.getResult().getText();
+
+                    } else {
+                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
                     }
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
                 } else if (e.getResult().getReason() == ResultReason.NoMatch) {
