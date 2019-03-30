@@ -32,16 +32,15 @@ public class audioWavCallback implements MqttCallback {
 //            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
         String currentDirectory = System.getProperty("user.dir");
         destinationFile = new File(currentDirectory, destinationFileName);
-        if (destinationFile.exists()) {
-            byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
-        }
-        System.out.println("Audio Message received:\n\t");
-        System.out.println(destinationFile.getAbsolutePath());
+
         new Thread(() -> {
             try {
+                byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
+                System.out.println("Audio Message received:\n\t");
+                System.out.println(destinationFile.getAbsolutePath());
                 SpeechRecognitionSamples speechRecognitionSamples = new SpeechRecognitionSamples();
                 speechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
-            } catch (InterruptedException | ExecutionException | FileNotFoundException e) {
+            } catch (InterruptedException | ExecutionException | IOException e) {
                 e.printStackTrace();
             }
         }).start();
