@@ -27,13 +27,13 @@ public class audioWavCallback implements MqttCallback {
         File destinationFile;
         String destinationFileName;
 
-        do {
-            destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFilenameExtension;
+        destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFilenameExtension;
 //            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
-            String currentDirectory = System.getProperty("user.dir");
-            destinationFile = new File(currentDirectory, destinationFileName);
+        String currentDirectory = System.getProperty("user.dir");
+        destinationFile = new File(currentDirectory, destinationFileName);
+        if (destinationFile.exists()) {
             byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
-        } while (destinationFile.exists());
+        }
         System.out.println("Audio Message received:\n\t");
         System.out.println(destinationFile.getAbsolutePath());
         SpeechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
@@ -45,9 +45,9 @@ public class audioWavCallback implements MqttCallback {
 
     public void byteArrayToWavFile(byte[] resultArray, String filename) throws IOException {
         InputStream b_in = new ByteArrayInputStream(resultArray);
-//        DataOutputStream dos = new DataOutputStream(new FileOutputStream(
-//                "C:\\filename.bin"));
-//        dos.write(resultArray);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(
+                filename));
+        dos.write(resultArray);
         AudioFormat format = new AudioFormat(16000f, 16, 1, true, false);
 
         AudioInputStream stream = new AudioInputStream(b_in, format, resultArray.length);
