@@ -23,12 +23,13 @@ public class audioWavCallback implements MqttCallback {
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         //Bytes
         byte[] wavBytes = mqttMessage.getPayload();
-        for (byte wavByte : wavBytes) {
-            System.out.println(wavByte);
-        }
+        mqttMessage.setQos(2);
+        mqttMessage.setRetained(Boolean.FALSE);
+
         String sourceFilenameExtension = "wav";
         File destinationFile;
         String destinationFileName;
+
 
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFilenameExtension;
@@ -38,10 +39,9 @@ public class audioWavCallback implements MqttCallback {
         } while (destinationFile.exists());
 
         byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
-        if (destinationFile.length() != 0){
-
-        SpeechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
-        System.out.println("Audio Message received:\n\t" + new String(mqttMessage.getPayload()));
+        if (destinationFile.length() != 0) {
+            SpeechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
+            System.out.println("Audio Message received:\n\t");
         }
     }
 
@@ -54,9 +54,8 @@ public class audioWavCallback implements MqttCallback {
 //        DataOutputStream dos = new DataOutputStream(new FileOutputStream(
 //                "C:\\filename.bin"));
 //        dos.write(resultArray);
-        AudioFormat format = new AudioFormat(8000f, 16, 1, true, false);
-        AudioInputStream stream = new AudioInputStream(b_in, format,
-                resultArray.length);
+        AudioFormat format = new AudioFormat(16000f, 16, 1, true, false);
+        AudioInputStream stream = new AudioInputStream(b_in, format, resultArray.length);
         File file = new File(filename);
         AudioSystem.write(stream, WAVE, file);
         System.out.println("File saved: " + file.getName() + ", bytes: " + resultArray.length);

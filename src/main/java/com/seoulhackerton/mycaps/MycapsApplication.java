@@ -2,6 +2,7 @@ package com.seoulhackerton.mycaps;
 
 import com.seoulhackerton.mycaps.components.mqtt.audioWavCallback;
 import com.seoulhackerton.mycaps.components.mqtt.voiceLevelCallback;
+import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
