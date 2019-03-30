@@ -3,7 +3,6 @@ package com.seoulhackerton.mycaps;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
-import com.seoulhackerton.mycaps.service.telegram.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileInputStream;
@@ -60,6 +59,7 @@ public class SpeechRecognitionSamples {
             });
 
             recognizer.canceled.addEventListener((s, e) -> {
+                messageService.sendMsg("hahaha3");
                 System.out.println("CANCELED: Reason=" + e.getReason());
 
                 if (e.getReason() == CancellationReason.Error) {
