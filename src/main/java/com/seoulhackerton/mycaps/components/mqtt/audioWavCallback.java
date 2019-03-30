@@ -27,17 +27,16 @@ public class audioWavCallback implements MqttCallback {
         File destinationFile;
         String destinationFileName;
 
-
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFilenameExtension;
 //            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
             String currentDirectory = System.getProperty("user.dir");
             destinationFile = new File(currentDirectory, destinationFileName);
+            byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
         } while (destinationFile.exists());
-        byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
+        System.out.println("Audio Message received:\n\t");
         System.out.println(destinationFile.getAbsolutePath());
         SpeechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
-        System.out.println("Audio Message received:\n\t");
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
@@ -50,7 +49,9 @@ public class audioWavCallback implements MqttCallback {
 //                "C:\\filename.bin"));
 //        dos.write(resultArray);
         AudioFormat format = new AudioFormat(16000f, 16, 1, true, false);
+
         AudioInputStream stream = new AudioInputStream(b_in, format, resultArray.length);
+
         File file = new File(filename);
         AudioSystem.write(stream, WAVE, file);
         System.out.println("File saved: " + file.getName() + ", bytes: " + resultArray.length);
