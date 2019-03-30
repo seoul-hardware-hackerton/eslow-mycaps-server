@@ -65,6 +65,8 @@ public class AttachmentController {
 //            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
             String currentDirectory = System.getProperty("user.dir");
             destinationFile = new File(currentDirectory, destinationFileName);
+            System.out.println("1." + destinationFile);
+            System.out.println("2." + sourceFileName + sourceFilenameExtension);
         } while (destinationFile.exists());
         //TODO sourceFile 로 바로 다이렉트로 꽂히게 수정할 것.
         sourceFile.transferTo(destinationFile);
@@ -101,8 +103,8 @@ public class AttachmentController {
                 System.out.println("REST Response:\n");
                 System.out.println(value.toString());
                 //TODO 이미지 테스트해서 나오는 결과값으로 롤 설정. / Telegram Message Send. 위험하다는 메세지.
-                if (value.getDescription().getTags().contains("jumping")) {
-                    sendTelegram("jumping man");
+                if (value.getDescription().getTags().contains("laying")) {
+                    sendTelegram("쓰러진 사람이 있습니다. 여기 주소는 XXXX");
                 }
             }
         } catch (Exception e) {
