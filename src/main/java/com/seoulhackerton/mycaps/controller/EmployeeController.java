@@ -4,8 +4,11 @@ package com.seoulhackerton.mycaps.controller;
 import com.seoulhackerton.mycaps.domain.Employee;
 import com.seoulhackerton.mycaps.exception.EmployeeNotFoundException;
 import com.seoulhackerton.mycaps.payroll.EmployeeRepository;
+import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 @RestController
@@ -17,10 +20,21 @@ class EmployeeController {
         this.repository = repository;
     }
 
+    @Autowired
+    private CoreTelegramService mainService;
+
     // Aggregate root
     @GetMapping("/employees")
     List<Employee> all() {
+        String text = "Are you on Way to go Daiso ???????????";
+        sendTelegram(text);
         return repository.findAll();
+    }
+
+    private void sendTelegram(String text) {
+        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
+        String sb = url + URLEncoder.encode(text);
+        mainService.sendMsg(sb);
     }
 
     @PostMapping("/employees")

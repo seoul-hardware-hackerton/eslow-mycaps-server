@@ -14,6 +14,6 @@ public class VoiceTest {
 
     @Test
     public void voiceTest() throws InterruptedException, ExecutionException, FileNotFoundException {
-        SpeechRecognitionSamples.recognitionWithAudioStreamAsync();
+//        SpeechRecognitionSamples.recognitionWithAudioStreamAsync();
     }
 }

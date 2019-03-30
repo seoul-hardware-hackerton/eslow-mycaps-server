@@ -10,21 +10,24 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.ExecutionException;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ImageTest {
-//     **********************************************
-//     *** Update or verify the following values. ***
-//     **********************************************
-//
-//     Replace <Subscription Key> with your valid subscription key.
+
     private static final String subscriptionKey = "06c31f1b012c41db8c8dce11080c6d96";
-//
+    //
 //     You must use the same Azure region in your REST API method as you used to
 //     get your subscription keys. For example, if you got your subscription keys
 //     from the West US region, replace "westcentralus" in the URL
@@ -36,14 +39,15 @@ public class ImageTest {
     private static final String uriBase =
             "https://koreacentral.api.cognitive.microsoft.com/vision/v2.0/analyze";
 
-//        private static final String imageToAnalyze =
+    //        private static final String imageToAnalyze =
 //            "http://ojsfile.ohmynews.com/STD_IMG_FILE/2015/0210/IE001800093_STD.jpg";
     private static final String imageToAnalyze =
-            "/Users/lenkim/toy-project/mycaps/attachments/jumping-sample.jpeg";
+//            "/Users/lenkim/toy-project/mycaps/attachments/jumping-sample.jpeg";
+            "/Users/lenkim/toy-project/mycaps/attachments/123.jpeg";
 
 
-    public static void main(String[] args) {
-
+    @Test
+    public void voiceTest() throws InterruptedException, ExecutionException, FileNotFoundException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
         try {
@@ -83,6 +87,7 @@ public class ImageTest {
             System.out.println(e.getMessage());
         }
     }
+//     Replace <Subscription Key> with your valid subscription key.
 
     private static byte[] readBytesFromFile(String filePath) throws FileNotFoundException {
 
@@ -110,7 +115,6 @@ public class ImageTest {
                     e.printStackTrace();
                 }
             }
-
         }
 
         return bytesArray;

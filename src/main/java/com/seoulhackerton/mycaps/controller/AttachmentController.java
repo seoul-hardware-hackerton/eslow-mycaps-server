@@ -2,7 +2,7 @@ package com.seoulhackerton.mycaps.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seoulhackerton.mycaps.Constant;
-import com.seoulhackerton.mycaps.Util;
+import com.seoulhackerton.mycaps.util.Util;
 import com.seoulhackerton.mycaps.domain.AzureImage;
 import com.seoulhackerton.mycaps.domain.Image.ImageRes;
 import com.seoulhackerton.mycaps.service.MqttPublishClient;
@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 
 
 @RestController
@@ -54,8 +55,8 @@ public class AttachmentController {
 
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFilenameExtension;
-            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
-//            destinationFile = new File("/Users/lenkim/toy-project/mycaps/attachments/" + destinationFileName);
+//            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
+            destinationFile = new File("/Users/lenkim/toy-project/mycaps/attachments/" + destinationFileName);
         } while (destinationFile.exists());
         //TODO sourceFile 로 바로 다이렉트로 꽂히게 수정할 것.
         sourceFile.transferTo(destinationFile);
@@ -76,7 +77,7 @@ public class AttachmentController {
             // Request headers.
             byte[] a = Util.readBytesFromFile(destinationFile.getAbsolutePath());
             request.setHeader("Content-Type", "application/octet-stream");
-            request.setHeader("Ocp-Apim-Subscription-Key", imageConfig.getSubscriptionKey());
+            request.setHeader("Ocp-Apim-Subscription-Key", "06c31f1b012c41db8c8dce11080c6d96");
             // Request body.
             HttpEntity byteArrayEntity = new ByteArrayEntity(a);
             request.setEntity(byteArrayEntity);
@@ -94,7 +95,7 @@ public class AttachmentController {
                 sendAlarm();
                 //TODO 이미지 테스트해서 나오는 결과값으로 롤 설정. / Telegram Message Send. 위험하다는 메세지.
                 if (value.getDescription().getTags().contains("laying")) {
-                    sendMqttAlarm.send(Constant.IMAGE_MQTT_TOPIC, "Dangerous" + value.getDescription().getTags().toString());
+
                 }
             }
         } catch (Exception e) {
@@ -111,15 +112,16 @@ public class AttachmentController {
     }
 
     private void sendAlarm() {
-        sendTelegram();
+        sendTelegram("위험해!");
         sendMqttMbed();
     }
 
     private void sendMqttMbed() {
     }
 
-    private void sendTelegram() {
+    private void sendTelegram(String text) {
     }
+
 
     @NoArgsConstructor
     @Data

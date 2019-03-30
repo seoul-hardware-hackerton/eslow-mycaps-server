@@ -10,12 +10,7 @@ public class AzureImage {
 
     @Value("${eslow.subscriptionkey}")
     private String subscriptionKey;
-
     public String getSubscriptionKey() {
         return subscriptionKey;
-    }
-
-    public void setSubscriptionKey(String subscriptionKey) {
-        this.subscriptionKey = subscriptionKey;
     }
 }
