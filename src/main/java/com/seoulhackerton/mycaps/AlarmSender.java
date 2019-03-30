@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutionException;
 public class AlarmSender {
 
     private static ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<String>();
-    SpeechRecognitionSamples speechRecognitionSamples = new SpeechRecognitionSamples();
     boolean isRunning = false;
 
     public AlarmSender() {
@@ -29,7 +28,7 @@ public class AlarmSender {
         while (!concurrentLinkedQueue.isEmpty()) {
             String filePath = concurrentLinkedQueue.poll();
             try {
-                speechRecognitionSamples.recognitionWithAudioStreamAsync(filePath);
+                SpeechRecognitionSamples.recognitionWithAudioStreamAsync(filePath);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
