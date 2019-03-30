@@ -16,6 +16,11 @@ import com.seoulhackerton.mycaps.service.telegram.JsonResult;
 import com.seoulhackerton.mycaps.service.telegram.MessageService;
 import com.seoulhackerton.mycaps.util.DataMap;
 import com.seoulhackerton.mycaps.util.Util;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +58,7 @@ public class SpeechRecognitionSamples {
 
         stopRecognitionSemaphore = new Semaphore(0);
 
-        MqttPublishClient client = new MqttPublishClient();
+        MqttPublishClient2 client = new MqttPublishClient2();
         SpeechConfig config = SpeechConfig.fromSubscription(voiceConfig.getSubscriptionKey(), "eastasia");
         System.out.println(filePath);
         PullAudioInputStreamCallback callback = new WavStream(new FileInputStream(filePath));
@@ -74,10 +79,8 @@ public class SpeechRecognitionSamples {
 
                         //텔레그램으로 살려줘 보내고 text를 가져옴
                         //TELEGRAM
-
-                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_LED_RED));
-//                        String sttResult = e.getResult().getText();
-
+                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
+                        System.out.println(e.getResult().getText());
                     } else {
                         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
                     }
@@ -118,6 +121,37 @@ public class SpeechRecognitionSamples {
 
             // Stops recognition.
             recognizer.stopContinuousRecognitionAsync().get();
+        }
+    }
+}
+class MqttPublishClient2 {
+
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(com.seoulhackerton.mycaps.service.MqttPublishClient.class);
+
+//    @Autowired
+//    MqttProperties mqttProperties;
+
+    public void send(String topic, String content) {
+        MemoryPersistence persistence = new MemoryPersistence();
+        MqttClient sampleClient = null;
+
+        try {
+
+            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", "scout-sub-test", persistence);
+            MqttConnectOptions connOpts = new MqttConnectOptions();
+            //http://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages
+            connOpts.setCleanSession(true);
+
+            sampleClient.connect(connOpts);
+            logger.info("send(): Publishing message: " + content + " to topic: " + topic);
+            MqttMessage message = new MqttMessage(content.getBytes());
+            message.setQos(Integer.parseInt("2"));
+            message.setRetained(Boolean.FALSE);
+
+            sampleClient.publish(topic, message);
+            sampleClient.disconnect();
+        } catch (MqttException e) {
+            logger.info("Error on send with MqttClient...");
         }
     }
 }
