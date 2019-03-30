@@ -2,6 +2,7 @@ package com.seoulhackerton.mycaps.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seoulhackerton.mycaps.Constant;
+import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
 import com.seoulhackerton.mycaps.util.Util;
 import com.seoulhackerton.mycaps.domain.AzureImage;
 import com.seoulhackerton.mycaps.domain.Image.ImageRes;
@@ -40,6 +41,15 @@ public class AttachmentController {
     @Autowired
     AzureImage imageConfig;
 
+    @Autowired
+    CoreTelegramService coreTelegramService;
+
+    private void sendTelegram(String text) {
+        System.out.println("sendTelegram");
+        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
+        String sb = url + URLEncoder.encode(text);
+        coreTelegramService.sendMsg(sb);
+    }
 
     @RequestMapping(value = "/file", method = RequestMethod.POST)
     public @ResponseBody
@@ -91,8 +101,8 @@ public class AttachmentController {
                 System.out.println("REST Response:\n");
                 System.out.println(value.toString());
                 //TODO 이미지 테스트해서 나오는 결과값으로 롤 설정. / Telegram Message Send. 위험하다는 메세지.
-                if (value.getDescription().getTags().contains("laying")) {
-
+                if (value.getDescription().getTags().contains("jumping")) {
+                    sendTelegram("jumping man");
                 }
             }
         } catch (Exception e) {

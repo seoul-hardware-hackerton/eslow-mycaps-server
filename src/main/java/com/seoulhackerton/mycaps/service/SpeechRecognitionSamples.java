@@ -1,5 +1,7 @@
 package com.seoulhackerton.mycaps.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.cognitiveservices.speech.CancellationReason;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
@@ -10,12 +12,19 @@ import com.seoulhackerton.mycaps.Constant;
 import com.seoulhackerton.mycaps.domain.AzureVoice;
 import com.seoulhackerton.mycaps.domain.WavStream;
 import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
+import com.seoulhackerton.mycaps.service.telegram.JsonResult;
 import com.seoulhackerton.mycaps.service.telegram.MessageService;
+import com.seoulhackerton.mycaps.util.DataMap;
+import com.seoulhackerton.mycaps.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
@@ -29,8 +38,14 @@ public class SpeechRecognitionSamples {
     static AzureVoice voiceConfig;
 
     @Autowired
-    static MessageService messageService;
+    static CoreTelegramService messageService;
 
+    private static void sendTelegram(String text) {
+        System.out.println("sendTelegram");
+        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
+        String sb = url + URLEncoder.encode(text);
+        messageService.sendMsg(sb);
+    }
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync(InputStream is) throws InterruptedException, ExecutionException, FileNotFoundException {
 
@@ -52,8 +67,9 @@ public class SpeechRecognitionSamples {
 
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
-                    messageService.sendMsg("hahaha");
+                    sendTelegram("GGGGG");
                     if (e.getResult().getText().contains("help")) {
+
                         //텔레그램으로 살려줘 보내고 text를 가져옴
                         //TELEGRAM
 
