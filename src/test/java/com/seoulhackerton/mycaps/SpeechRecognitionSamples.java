@@ -3,11 +3,13 @@ package com.seoulhackerton.mycaps;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
+import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
 import com.seoulhackerton.mycaps.service.telegram.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
@@ -18,15 +20,20 @@ import java.util.concurrent.Semaphore;
 public class SpeechRecognitionSamples {
 
     @Autowired
-    static MessageService messageService;
+    private static CoreTelegramService mainService;
 
     // The Source to stop recognition.
     private static Semaphore stopRecognitionSemaphore;
 
+    private static void sendTelegram(String text) {
+        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
+        String sb = url + URLEncoder.encode(text);
+        mainService.sendMsg(sb);
+    }
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync() throws InterruptedException, ExecutionException, FileNotFoundException {
 
-        messageService.sendMsg("hahaha");
+        sendTelegram("GGGGGG");
         stopRecognitionSemaphore = new Semaphore(0);
 
         // Creates an instance of a speech config with specified
@@ -44,13 +51,11 @@ public class SpeechRecognitionSamples {
         SpeechRecognizer recognizer = new SpeechRecognizer(config, audioInput);
         // Subscribes to events.
         recognizer.recognizing.addEventListener((s, e) -> {
-//            messageService.sendMsg("hahaha1");
             System.out.println("RECOGNIZING: Text=" + e.getResult().getText());
         });
 
         recognizer.recognized.addEventListener((s, e) -> {
             if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
-//                messageService.sendMsg("hahaha2");
                 System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
             } else if (e.getResult().getReason() == ResultReason.NoMatch) {
                 System.out.println("NOMATCH: Speech could not be recognized.");
@@ -58,7 +63,6 @@ public class SpeechRecognitionSamples {
         });
 
         recognizer.canceled.addEventListener((s, e) -> {
-//            messageService.sendMsg("hahaha3");
             System.out.println("CANCELED: Reason=" + e.getReason());
 
             if (e.getReason() == CancellationReason.Error) {
