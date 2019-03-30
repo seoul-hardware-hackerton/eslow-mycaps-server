@@ -46,12 +46,12 @@ public class SpeechRecognitionSamples {
         {
             // Subscribes to events.
             recognizer.recognizing.addEventListener((s, e) -> {
+                messageService.sendMsg("hahaha");
                 System.out.println("RECOGNIZING: Text=" + e.getResult().getText());
             });
 
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
-                    messageService.sendMsg("hahaha");
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
                 } else if (e.getResult().getReason() == ResultReason.NoMatch) {
                     System.out.println("NOMATCH: Speech could not be recognized.");
