@@ -9,6 +9,7 @@ import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -52,7 +53,7 @@ public class AttachmentController {
         String destinationFileName;
 
         do {
-            destinationFileName = sourceFileName + "." + sourceFilenameExtension;
+            destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFilenameExtension;
 //            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
             destinationFile = new File("/Users/lenkim/toy-project/mycaps/attachments/" + destinationFileName);
         } while (destinationFile.exists());

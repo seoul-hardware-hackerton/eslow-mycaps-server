@@ -2,6 +2,7 @@ package com.seoulhackerton.mycaps;
 
 import com.seoulhackerton.mycaps.components.mqtt.audioWavCallback;
 import com.seoulhackerton.mycaps.components.mqtt.voiceLevelCallback;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -19,22 +20,28 @@ public class MycapsApplication {
     }
 
     private static void audioWavSubscribe() throws MqttException {
-        System.out.println("== START Audio Wav SUBSCRIBER ==");
-        MqttClient client = new MqttClient("tcp://52.141.36.28:1883", MqttClient.generateClientId());
-        client.setCallback(new audioWavCallback());
-        client.connect();
-        client.subscribe("eslow/audio");
+        System.out.println("== START AUDIO WAV SUBSCRIBER ==");
+        String url = Constant.ServerURI;
+        String topic = Constant.AUDIO_MQTT_TOPIC;
+        MqttCallback callback = new audioWavCallback();
+        setMqttConfig(url, topic, callback);
     }
 
     private static void voiceLevelSubscribe() throws MqttException {
-        System.out.println("== START Voice Level SUBSCRIBER ==");
-        MqttClient client = new MqttClient("tcp://52.141.36.28:1883", MqttClient.generateClientId());
+        System.out.println("== START VOICE LEVEL SUBSCRIBER ==");
+        String url = Constant.ServerURI;
+        String topic = Constant.VOICE_MQTT_TOPIC;
+        MqttCallback callback = new voiceLevelCallback();
+        setMqttConfig(url, topic, callback);
+    }
+    private static void setMqttConfig(String url, String topic, MqttCallback callback) throws MqttException {
+        MqttClient client = new MqttClient(url, MqttClient.generateClientId());
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
         client.connect(options);
-        client.setCallback(new voiceLevelCallback());
-        client.subscribe("eslow/voice");
+        client.setCallback(callback);
+        client.subscribe(topic);
     }
 }
 
