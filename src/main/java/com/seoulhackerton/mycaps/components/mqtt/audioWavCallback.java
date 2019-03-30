@@ -18,7 +18,7 @@ public class audioWavCallback implements MqttCallback {
         byte[] wavBytes = mqttMessage.getPayload();
         InputStream is = new ByteArrayInputStream(wavBytes);
 //        SpeechRecognitionSamples.recognitionWithAudioStreamAsync(is);
-        System.out.println("Message received:\n\t"+ new String(mqttMessage.getPayload()) );
+        System.out.println("Audio Message received:\n\t"+ new String(mqttMessage.getPayload()) );
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {

@@ -19,7 +19,7 @@ public class voiceLevelCallback implements MqttCallback {
 //        }
         byte[] abc = mqttMessage.getPayload();
         for (int i = 0; i < mqttMessage.getPayload().length; i++) {
-            System.out.println("Message received:\n\t" + abc[i]);
+            System.out.println("VoiceLevel Message received:\n\t" + abc[i]);
         }
     }
 
