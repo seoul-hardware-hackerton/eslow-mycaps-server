@@ -3,12 +3,17 @@ package com.seoulhackerton.mycaps;
 import com.seoulhackerton.mycaps.components.mqtt.audioWavCallback;
 import com.seoulhackerton.mycaps.components.mqtt.voiceLevelCallback;
 import com.seoulhackerton.mycaps.service.MqttPublishClient;
+import com.seoulhackerton.mycaps.service.SpeechRecognitionSamples;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.io.FileNotFoundException;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
 
 @SpringBootApplication
 public class MycapsApplication {
@@ -20,11 +25,13 @@ public class MycapsApplication {
         SpringApplication.run(MycapsApplication.class, args);
     }
 
+
     private static void audioWavSubscribe() throws MqttException {
+        AlarmSender alarmSender = new AlarmSender();
         System.out.println("== START AUDIO WAV SUBSCRIBER ==");
         String url = Constant.ServerURI;
         String topic = Constant.AUDIO_MQTT_TOPIC;
-        MqttCallback callback = new audioWavCallback();
+        MqttCallback callback = new audioWavCallback(alarmSender);
         MqttClient client = new MqttClient(url, MqttClient.generateClientId());
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);

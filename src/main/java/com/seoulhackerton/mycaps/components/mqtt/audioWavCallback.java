@@ -1,5 +1,6 @@
 package com.seoulhackerton.mycaps.components.mqtt;
 
+import com.seoulhackerton.mycaps.AlarmSender;
 import com.seoulhackerton.mycaps.service.SpeechRecognitionSamples;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -11,11 +12,18 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 
 import static javax.sound.sampled.AudioFileFormat.Type.WAVE;
 
 public class audioWavCallback implements MqttCallback {
+
+    private AlarmSender alarmSender;
+
+    public audioWavCallback(AlarmSender alarmSender) {
+        this.alarmSender = alarmSender;
+    }
 
     public void connectionLost(Throwable throwable) {
         System.out.println("Connection to MQTT broker lost!");
@@ -29,21 +37,12 @@ public class audioWavCallback implements MqttCallback {
         String destinationFileName;
 
         destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFilenameExtension;
-//            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
         String currentDirectory = System.getProperty("user.dir");
         destinationFile = new File(currentDirectory, destinationFileName);
-
-        new Thread(() -> {
-            try {
-                byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
-                System.out.println("Audio Message received:\n\t");
-                System.out.println(destinationFile.getAbsolutePath());
-                SpeechRecognitionSamples speechRecognitionSamples = new SpeechRecognitionSamples();
-                speechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
-            } catch (InterruptedException | ExecutionException | IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
+        System.out.println("Audio Message received:\n\t");
+        System.out.println(destinationFile.getAbsolutePath());
+        alarmSender.add(destinationFile.getAbsolutePath());
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
