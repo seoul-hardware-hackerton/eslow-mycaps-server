@@ -39,10 +39,8 @@ public class audioWavCallback implements MqttCallback {
         } while (destinationFile.exists());
 
         byteArrayToWavFile(wavBytes, destinationFile.getAbsolutePath());
-        if (destinationFile.length() != 0) {
-            SpeechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
-            System.out.println("Audio Message received:\n\t");
-        }
+        SpeechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
+        System.out.println("Audio Message received:\n\t");
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
