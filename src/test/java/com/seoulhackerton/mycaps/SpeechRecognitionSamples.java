@@ -5,12 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
+import com.seoulhackerton.mycaps.components.mqtt.MqttProperties;
 import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
 import com.seoulhackerton.mycaps.service.telegram.JsonResult;
 import com.seoulhackerton.mycaps.service.telegram.MessageService;
 import com.seoulhackerton.mycaps.util.DataMap;
 import com.seoulhackerton.mycaps.util.Util;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +49,6 @@ public class SpeechRecognitionSamples {
     public void recognitionWithAudioStreamAsync() throws InterruptedException, ExecutionException, FileNotFoundException {
         System.out.println("QQQQQQQQQ");
 
-        MqttPublishClient client = new MqttPublishClient();
         stopRecognitionSemaphore = new Semaphore(0);
         // Creates an instance of a speech config with specified
         // subscription key and service region. Replace with your own subscription key
@@ -59,14 +64,16 @@ public class SpeechRecognitionSamples {
         // Creates a speech recognizer using audio stream input.
         SpeechRecognizer recognizer = new SpeechRecognizer(config, audioInput);
         // Subscribes to events.
+        MqttPublishClient2 mqttPublishClient2 = new MqttPublishClient2();
         recognizer.recognizing.addEventListener((s, e) -> {
             System.out.println("RECOGNIZING: Text=" + e.getResult().getText());
+            mqttPublishClient2.send("eslow/alarm", "foo");
         });
 
         recognizer.recognized.addEventListener((s, e) -> {
             if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
-                if(e.getResult().getText().contains("like")){
-                    client.send("eslow/alarm", "foo");
+                if (e.getResult().getText().contains("like")) {
+                    mqttPublishClient2.send("eslow/alarm", "foo");
                     sendTelegram("foo");
                 }
                 System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
@@ -110,7 +117,7 @@ public class SpeechRecognitionSamples {
     }
 }
 
-class Core{
+class Core {
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 
@@ -122,14 +129,47 @@ class Core{
 
         try {
             String response = Util.sendRequest(url);
-            result = objectMapper.readValue(response, new TypeReference<DataMap>() {});
+            result = objectMapper.readValue(response, new TypeReference<DataMap>() {
+            });
 
         } catch (IOException e) {
             logger.info("faultStatus push faile");
         }
 
         logger.info("연동 결과 : {}", result);
-        return new JsonResult(1, null , dataMap);
+        return new JsonResult(1, null, dataMap);
 
+    }
+}
+
+class MqttPublishClient2 {
+
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(com.seoulhackerton.mycaps.service.MqttPublishClient.class);
+
+//    @Autowired
+//    MqttProperties mqttProperties;
+
+    public void send(String topic, String content) {
+        MemoryPersistence persistence = new MemoryPersistence();
+        MqttClient sampleClient = null;
+
+        try {
+
+            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", "scout-sub-test", persistence);
+            MqttConnectOptions connOpts = new MqttConnectOptions();
+            //http://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages
+            connOpts.setCleanSession(true);
+
+            sampleClient.connect(connOpts);
+            logger.info("send(): Publishing message: " + content + " to topic: " + topic);
+            MqttMessage message = new MqttMessage(content.getBytes());
+            message.setQos(Integer.parseInt("2"));
+            message.setRetained(Boolean.FALSE);
+
+            sampleClient.publish(topic, message);
+            sampleClient.disconnect();
+        } catch (MqttException e) {
+            logger.info("Error on send with MqttClient...");
+        }
     }
 }
