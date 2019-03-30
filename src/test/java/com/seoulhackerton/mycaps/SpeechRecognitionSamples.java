@@ -3,6 +3,7 @@ package com.seoulhackerton.mycaps;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
+import com.seoulhackerton.mycaps.service.telegram.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileInputStream;
@@ -16,6 +17,9 @@ import java.util.concurrent.Semaphore;
 
 
 public class SpeechRecognitionSamples {
+
+    @Autowired
+    static MessageService messageService;
 
     // The Source to stop recognition.
     private static Semaphore stopRecognitionSemaphore;
@@ -47,6 +51,7 @@ public class SpeechRecognitionSamples {
 
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
+                    messageService.sendMsg("hahaha");
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
                 } else if (e.getResult().getReason() == ResultReason.NoMatch) {
                     System.out.println("NOMATCH: Speech could not be recognized.");
