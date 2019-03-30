@@ -9,6 +9,7 @@ import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback
 import com.seoulhackerton.mycaps.Constant;
 import com.seoulhackerton.mycaps.domain.AzureVoice;
 import com.seoulhackerton.mycaps.domain.WavStream;
+import com.seoulhackerton.mycaps.service.telegram.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,9 @@ public class SpeechRecognitionSamples {
 
     @Autowired
     static AzureVoice voiceConfig;
+
+    @Autowired
+    static MessageService messageService;
 
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync(InputStream is) throws InterruptedException, ExecutionException, FileNotFoundException {
@@ -48,7 +52,12 @@ public class SpeechRecognitionSamples {
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
                     if (e.getResult().getText().contains("help")) {
+                        //텔레그램으로 살려줘 보내고 text를 가져옴
+                        //TELEGRAM
+                        String text = messageService.sendMsg(e.getResult().getText());
+                        System.out.println("---- text : " + text);
                         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_LED_RED));
+
                         //TODO 텔레그램 으로 살려줘 보내기.
                         //TODO MQTT로 전송
                         String sttResult = e.getResult().getText();

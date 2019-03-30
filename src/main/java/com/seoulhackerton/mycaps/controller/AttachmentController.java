@@ -37,9 +37,6 @@ public class AttachmentController {
 
     private static final Logger logger = Logger.getLogger(AttachmentController.class);
 
-
-    private MqttPublishClient sendMqttAlarm;
-
     @Autowired
     AzureImage imageConfig;
 
@@ -56,7 +53,8 @@ public class AttachmentController {
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFilenameExtension;
 //            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
-            destinationFile = new File("/Users/lenkim/toy-project/mycaps/attachments/" + destinationFileName);
+            String currentDirectory = System.getProperty("user.dir");
+            destinationFile = new File(currentDirectory, destinationFileName);
         } while (destinationFile.exists());
         //TODO sourceFile 로 바로 다이렉트로 꽂히게 수정할 것.
         sourceFile.transferTo(destinationFile);

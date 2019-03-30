@@ -22,7 +22,6 @@ public class MqttPublishClient {
 
     private static final Logger logger = Logger.getLogger(MqttPublishClient.class);
     
-    //http://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels
     @Autowired
     MqttProperties mqttProperties;
 
@@ -53,5 +52,6 @@ public class MqttPublishClient {
         } catch (MqttException e) {
             logger.info("Error on send with MqttClient...");
         }
+
     }
 }

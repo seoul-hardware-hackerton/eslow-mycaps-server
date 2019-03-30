@@ -3,195 +3,29 @@ package com.seoulhackerton.mycaps;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
 // <toplevel>
 // </toplevel>
 
+
+
 public class SpeechRecognitionSamples {
-    // Speech recognition from microphone.
-    public static void recognitionWithMicrophoneAsync() throws InterruptedException, ExecutionException {
-        // <recognitionWithMicrophone>
-        // Creates an instance of a speech config with specified
-        // subscription key and service region. Replace with your own subscription key
-        // and service region (e.g., "westus").
-        // The default language is "en-us".
-        SpeechConfig config = SpeechConfig.fromSubscription("YourSubscriptionKey", "YourServiceRegion");
-
-        // Creates a speech recognizer using microphone as audio input.
-        SpeechRecognizer recognizer = new SpeechRecognizer(config);
-        {
-            // Starts recognizing.
-            System.out.println("Say something...");
-
-            // Starts recognition. It returns when the first utterance has been recognized.
-            SpeechRecognitionResult result = recognizer.recognizeOnceAsync().get();
-
-            // Checks result.
-            if (result.getReason() == ResultReason.RecognizedSpeech) {
-                System.out.println("RECOGNIZED: Text=" + result.getText());
-            } else if (result.getReason() == ResultReason.NoMatch) {
-                System.out.println("NOMATCH: Speech could not be recognized.");
-            } else if (result.getReason() == ResultReason.Canceled) {
-                CancellationDetails cancellation = CancellationDetails.fromResult(result);
-                System.out.println("CANCELED: Reason=" + cancellation.getReason());
-
-                if (cancellation.getReason() == CancellationReason.Error) {
-                    System.out.println("CANCELED: ErrorCode=" + cancellation.getErrorCode());
-                    System.out.println("CANCELED: ErrorDetails=" + cancellation.getErrorDetails());
-                    System.out.println("CANCELED: Did you update the subscription info?");
-                }
-            }
-        }
-        recognizer.close();
-        // </recognitionWithMicrophone>
-    }
-
-    // Speech recognition in the specified spoken language.
-    public static void recognitionWithLanguageAsync() throws InterruptedException, ExecutionException {
-        // Creates an instance of a speech config with specified
-        // subscription key and service region. Replace with your own subscription key
-        // and service region (e.g., "westus").
-        SpeechConfig config = SpeechConfig.fromSubscription("YourSubscriptionKey", "YourServiceRegion");
-
-        // Creates a speech recognizer for the specified language, using microphone as audio input.
-        String lang = "de-de";
-        config.setSpeechRecognitionLanguage(lang);
-
-        SpeechRecognizer recognizer = new SpeechRecognizer(config);
-        {
-            // Starts recognizing.
-            System.out.println("Say something in " + lang + " ...");
-
-            // Starts recognition. It returns when the first utterance has been recognized.
-            SpeechRecognitionResult result = recognizer.recognizeOnceAsync().get();
-
-            // Checks result.
-            if (result.getReason() == ResultReason.RecognizedSpeech) {
-                System.out.println("RECOGNIZED: Text=" + result.getText());
-            } else if (result.getReason() == ResultReason.NoMatch) {
-                System.out.println("NOMATCH: Speech could not be recognized.");
-            } else if (result.getReason() == ResultReason.Canceled) {
-                CancellationDetails cancellation = CancellationDetails.fromResult(result);
-                System.out.println("CANCELED: Reason=" + cancellation.getReason());
-
-                if (cancellation.getReason() == CancellationReason.Error) {
-                    System.out.println("CANCELED: ErrorCode=" + cancellation.getErrorCode());
-                    System.out.println("CANCELED: ErrorDetails=" + cancellation.getErrorDetails());
-                    System.out.println("CANCELED: Did you update the subscription info?");
-                }
-            }
-        }
-        recognizer.close();
-    }
-
-    // Speech recognition using a customized model.
-    public static void recognitionUsingCustomizedModelAsync() throws InterruptedException, ExecutionException {
-        // <recognitionCustomized>
-        // Creates an instance of a speech config with specified
-        // subscription key and service region. Replace with your own subscription key
-        // and service region (e.g., "westus").
-        SpeechConfig config = SpeechConfig.fromSubscription("YourSubscriptionKey", "YourServiceRegion");
-        // Replace with the CRIS endpoint id of your customized model.
-        config.setEndpointId("YourEndpointId");
-
-        // Creates a speech recognizer using microphone as audio input.
-        SpeechRecognizer recognizer = new SpeechRecognizer(config);
-        {
-            // Starts recognizing.
-            System.out.println("Say something...");
-
-            // Starts recognition. It returns when the first utterance has been recognized.
-            SpeechRecognitionResult result = recognizer.recognizeOnceAsync().get();
-
-            // Checks result.
-            if (result.getReason() == ResultReason.RecognizedSpeech) {
-                System.out.println("RECOGNIZED: Text=" + result.getText());
-            } else if (result.getReason() == ResultReason.NoMatch) {
-                System.out.println("NOMATCH: Speech could not be recognized.");
-            } else if (result.getReason() == ResultReason.Canceled) {
-                CancellationDetails cancellation = CancellationDetails.fromResult(result);
-                System.out.println("CANCELED: Reason=" + cancellation.getReason());
-
-                if (cancellation.getReason() == CancellationReason.Error) {
-                    System.out.println("CANCELED: ErrorCode=" + cancellation.getErrorCode());
-                    System.out.println("CANCELED: ErrorDetails=" + cancellation.getErrorDetails());
-                    System.out.println("CANCELED: Did you update the subscription info?");
-                }
-            }
-        }
-
-        recognizer.close();
-        // </recognitionCustomized>
-    }
-
-    // Speech recognition with events from file
-    public static void continuousRecognitionWithFileAsync() throws InterruptedException, ExecutionException, IOException {
-        // <recognitionContinuousWithFile>
-        // Creates an instance of a speech config with specified
-        // subscription key and service region. Replace with your own subscription key
-        // and service region (e.g., "westus").
-        SpeechConfig config = SpeechConfig.fromSubscription("YourSubscriptionKey", "YourServiceRegion");
-
-        // Creates a speech recognizer using file as audio input.
-        // Replace with your own audio file name.
-        AudioConfig audioInput = AudioConfig.fromWavFileInput("YourAudioFile.wav");
-        SpeechRecognizer recognizer = new SpeechRecognizer(config, audioInput);
-        {
-            // Subscribes to events.
-            recognizer.recognizing.addEventListener((s, e) -> {
-                System.out.println("RECOGNIZING: Text=" + e.getResult().getText());
-            });
-
-            recognizer.recognized.addEventListener((s, e) -> {
-                if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
-                    System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
-                } else if (e.getResult().getReason() == ResultReason.NoMatch) {
-                    System.out.println("NOMATCH: Speech could not be recognized.");
-                }
-            });
-
-            recognizer.canceled.addEventListener((s, e) -> {
-                System.out.println("CANCELED: Reason=" + e.getReason());
-
-                if (e.getReason() == CancellationReason.Error) {
-                    System.out.println("CANCELED: ErrorCode=" + e.getErrorCode());
-                    System.out.println("CANCELED: ErrorDetails=" + e.getErrorDetails());
-                    System.out.println("CANCELED: Did you update the subscription info?");
-                }
-            });
-
-            recognizer.sessionStarted.addEventListener((s, e) -> {
-                System.out.println("\n    Session started event.");
-            });
-
-            recognizer.sessionStopped.addEventListener((s, e) -> {
-                System.out.println("\n    Session stopped event.");
-            });
-
-            // Starts continuous recognition. Uses stopContinuousRecognitionAsync() to stop recognition.
-            System.out.println("Say something...");
-            recognizer.startContinuousRecognitionAsync().get();
-
-            System.out.println("Press any key to stop");
-            new Scanner(System.in).nextLine();
-
-            recognizer.stopContinuousRecognitionAsync().get();
-        }
-        // </recognitionContinuousWithFile>
-    }
 
     // The Source to stop recognition.
     private static Semaphore stopRecognitionSemaphore;
 
+    @Autowired
+    static MessageService messageService;
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync() throws InterruptedException, ExecutionException, FileNotFoundException {
+
+
         stopRecognitionSemaphore = new Semaphore(0);
 
         // Creates an instance of a speech config with specified
@@ -216,6 +50,8 @@ public class SpeechRecognitionSamples {
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
+                    messageService.sendMsg(e.getResult().getText());
+
                 } else if (e.getResult().getReason() == ResultReason.NoMatch) {
                     System.out.println("NOMATCH: Speech could not be recognized.");
                 }
