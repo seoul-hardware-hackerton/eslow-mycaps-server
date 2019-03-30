@@ -41,7 +41,6 @@ public class SpeechRecognitionSamples {
     // Speech recognition with audio stream
     public void recognitionWithAudioStreamAsync() throws InterruptedException, ExecutionException, FileNotFoundException {
         System.out.println("QQQQQQQQQ");
-        sendTelegram("haaha");
 
         stopRecognitionSemaphore = new Semaphore(0);
         // Creates an instance of a speech config with specified
@@ -64,6 +63,9 @@ public class SpeechRecognitionSamples {
 
         recognizer.recognized.addEventListener((s, e) -> {
             if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
+                if(e.getResult().getText().contains("like")){
+                    sendTelegram("foo");
+                }
                 System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
             } else if (e.getResult().getReason() == ResultReason.NoMatch) {
                 System.out.println("NOMATCH: Speech could not be recognized.");
