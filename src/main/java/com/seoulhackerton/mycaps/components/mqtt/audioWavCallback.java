@@ -11,6 +11,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.*;
+import java.util.concurrent.ExecutionException;
 
 import static javax.sound.sampled.AudioFileFormat.Type.WAVE;
 
@@ -36,8 +37,14 @@ public class audioWavCallback implements MqttCallback {
         }
         System.out.println("Audio Message received:\n\t");
         System.out.println(destinationFile.getAbsolutePath());
-        SpeechRecognitionSamples speechRecognitionSamples = new SpeechRecognitionSamples();
-        speechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
+        new Thread(() -> {
+            try {
+                SpeechRecognitionSamples speechRecognitionSamples = new SpeechRecognitionSamples();
+                speechRecognitionSamples.recognitionWithAudioStreamAsync(destinationFile.getAbsolutePath());
+            } catch (InterruptedException | ExecutionException | FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
