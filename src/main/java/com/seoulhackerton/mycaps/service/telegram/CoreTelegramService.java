@@ -12,6 +12,7 @@ import java.io.IOException;
 @Service("CoreTelegramService")
 public class CoreTelegramService extends BaseTelegramService {
 
+
     private static final Logger logger = LoggerFactory.getLogger(CoreTelegramService.class);
 
     public JsonResult sendMsg(String url) {

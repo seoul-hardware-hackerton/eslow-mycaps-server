@@ -1,14 +1,23 @@
 package com.seoulhackerton.mycaps;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
 import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
+import com.seoulhackerton.mycaps.service.telegram.JsonResult;
 import com.seoulhackerton.mycaps.service.telegram.MessageService;
+import com.seoulhackerton.mycaps.util.DataMap;
+import com.seoulhackerton.mycaps.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
@@ -16,26 +25,25 @@ import java.util.concurrent.Semaphore;
 // <toplevel>
 // </toplevel>
 
-
 public class SpeechRecognitionSamples {
-
-    @Autowired
-    private static CoreTelegramService mainService;
 
     // The Source to stop recognition.
     private static Semaphore stopRecognitionSemaphore;
 
-    private static void sendTelegram(String text) {
+    private void sendTelegram(String text) {
+        Core core = new Core();
         String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
         String sb = url + URLEncoder.encode(text);
-        mainService.sendMsg(sb);
+        core.sendMsg(sb);
+//        coreTelegramService.sendMsg(sb);
     }
+
     // Speech recognition with audio stream
-    public static void recognitionWithAudioStreamAsync() throws InterruptedException, ExecutionException, FileNotFoundException {
+    public void recognitionWithAudioStreamAsync() throws InterruptedException, ExecutionException, FileNotFoundException {
+        System.out.println("QQQQQQQQQ");
+        sendTelegram("haaha");
 
-        sendTelegram("GGGGGG");
         stopRecognitionSemaphore = new Semaphore(0);
-
         // Creates an instance of a speech config with specified
         // subscription key and service region. Replace with your own subscription key
         // and service region (e.g., "westus").
@@ -94,5 +102,29 @@ public class SpeechRecognitionSamples {
 
         // Stops recognition.
         recognizer.stopContinuousRecognitionAsync().get();
+    }
+}
+
+class Core{
+
+    protected ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final Logger logger = LoggerFactory.getLogger(CoreTelegramService.class);
+
+    public JsonResult sendMsg(String url) {
+        DataMap dataMap = new DataMap();
+        DataMap result = new DataMap();
+
+        try {
+            String response = Util.sendRequest(url);
+            result = objectMapper.readValue(response, new TypeReference<DataMap>() {});
+
+        } catch (IOException e) {
+            logger.info("faultStatus push faile");
+        }
+
+        logger.info("연동 결과 : {}", result);
+        return new JsonResult(1, null , dataMap);
+
     }
 }
