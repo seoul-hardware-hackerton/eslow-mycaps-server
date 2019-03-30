@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 
-@Service
+@Service("messageService")
 public class MessageService {
 
     @Autowired
