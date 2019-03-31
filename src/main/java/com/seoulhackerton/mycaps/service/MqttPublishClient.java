@@ -31,7 +31,7 @@ public class MqttPublishClient {
 
         try {
 
-            sampleClient = new MqttClient("tcp://" + mqttProperties.getUrl() + ":" + mqttProperties.getPort(), mqttProperties.getClientPubId(), persistence);
+            sampleClient = new MqttClient("tcp://" + mqttProperties.getUrl() + ":" + mqttProperties.getPort(), mqttProperties.getClientSubId(), persistence);
             MqttConnectOptions connOpts = new MqttConnectOptions();
             //http://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages
             connOpts.setCleanSession(true);

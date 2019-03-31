@@ -17,7 +17,7 @@ public class VoiceSender {
     public VoiceSender() {
         new Thread(() -> {
             isRunning = true;
-            MqttPublishClient client = new MqttPublishClient();
+            MqttPublishClient2 client = new MqttPublishClient2();
             while (isRunning) {
                 setSpeechRecognitionSamples(client);
             }
@@ -28,16 +28,16 @@ public class VoiceSender {
         isRunning = false;
     }
 
-    private void normalAlarm(MqttPublishClient client) {
+    private void normalAlarm(MqttPublishClient2 client) {
         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
     }
 
-    private void sendAlarm(MqttPublishClient client) {
+    private void sendAlarm(MqttPublishClient2 client) {
         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
     }
 
 
-    public void setSpeechRecognitionSamples(MqttPublishClient client) {
+    public void setSpeechRecognitionSamples(MqttPublishClient2 client) {
         while (!concurrentLinkedQueue.isEmpty()) {
             String filePath = concurrentLinkedQueue.poll();
             Double a = Double.parseDouble(filePath);
