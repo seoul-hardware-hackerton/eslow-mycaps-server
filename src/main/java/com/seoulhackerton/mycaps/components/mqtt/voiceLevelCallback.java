@@ -15,17 +15,17 @@ public class voiceLevelCallback implements MqttCallback {
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         MqttPublishClient client = new MqttPublishClient();
 //        byte[] voiceLevel = mqttMessage.getPayload();
+        Double a =  Double.parseDouble(new String(mqttMessage.getPayload()));
+                    if (a >= 1) {
+                sendAlarm(client);
+            } else {
+                normalAlarm(client);
+            }
+
         System.out.println("Message received:\n\t" + new String(mqttMessage.getPayload()));
-//        if (voiceLevel.length > 0){
-//
-//        }
+
 //        for (byte b : voiceLevel) {
 //            double a = (b) - 48;
-//            if (a >= 1) {
-//                sendAlarm(client);
-//            } else {
-//                normalAlarm(client);
-//            }
 //        }
     }
 
