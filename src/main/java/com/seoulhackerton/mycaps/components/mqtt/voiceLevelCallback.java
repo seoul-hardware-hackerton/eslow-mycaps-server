@@ -15,9 +15,9 @@ public class voiceLevelCallback implements MqttCallback {
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         MqttPublishClient client = new MqttPublishClient();
         byte[] voiceLevel = mqttMessage.getPayload();
+
         for (byte b : voiceLevel) {
-            double a = ((double) (b));
-            System.out.println(a);
+            double a = (b) - 48;
             if (a >= 1) {
                 sendAlarm(client);
             } else {
@@ -32,7 +32,6 @@ public class voiceLevelCallback implements MqttCallback {
 
     private void sendAlarm(MqttPublishClient client) {
         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
-        //TODO 텔레그램, MQTT 알람.
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {

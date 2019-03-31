@@ -1,5 +1,6 @@
 package com.seoulhackerton.mycaps.service;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -19,7 +20,7 @@ public class MqttPublishClient2 {
 
         try {
 
-            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", "scout-sub-test", persistence);
+            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", RandomStringUtils.randomAlphanumeric(5), persistence);
             MqttConnectOptions connOpts = new MqttConnectOptions();
             //http://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages
             connOpts.setCleanSession(true);

@@ -1,8 +1,11 @@
 package com.seoulhackerton.mycaps.components.mqtt;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+
+import java.util.Random;
 
 @Configuration
 @PropertySource("classpath:mqtt.properties")
@@ -48,11 +51,11 @@ public class MqttProperties {
     }
 
     public String getClientPubId() {
-        return clientPubId;
+        return RandomStringUtils.randomAlphanumeric(5);
     }
 
     public String getClientSubId() {
-        return clientSubId;
+        return RandomStringUtils.randomAlphanumeric(5);
     }
 
     public String getClientSubTopic() {
