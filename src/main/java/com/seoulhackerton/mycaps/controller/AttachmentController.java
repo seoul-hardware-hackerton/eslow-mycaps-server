@@ -59,6 +59,7 @@ public class AttachmentController {
         String sourceFilenameExtension = FilenameUtils.getExtension(sourceFileName);
         File destinationFile;
         String destinationFileName;
+        MqttPublishClient client = new MqttPublishClient();
 
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFilenameExtension;
@@ -105,6 +106,7 @@ public class AttachmentController {
                 //TODO 이미지 테스트해서 나오는 결과값으로 롤 설정. / Telegram Message Send. 위험하다는 메세지.
                 if (value.getDescription().getTags().contains("laying")) {
                     sendTelegram("쓰러진 사람이 있습니다. 여기 주소는 XXXX");
+                    client.send("eslow/alarm", "1");
                 }
             }
         } catch (Exception e) {

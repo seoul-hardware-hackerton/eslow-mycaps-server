@@ -1,7 +1,5 @@
 package com.seoulhackerton.mycaps.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.cognitiveservices.speech.CancellationReason;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
@@ -12,24 +10,16 @@ import com.seoulhackerton.mycaps.Constant;
 import com.seoulhackerton.mycaps.domain.AzureVoice;
 import com.seoulhackerton.mycaps.domain.WavStream;
 import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
-import com.seoulhackerton.mycaps.service.telegram.JsonResult;
-import com.seoulhackerton.mycaps.service.telegram.MessageService;
-import com.seoulhackerton.mycaps.util.DataMap;
-import com.seoulhackerton.mycaps.util.Util;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
@@ -55,35 +45,32 @@ public class SpeechRecognitionSamples {
 
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
-        MqttPublishClient2 client2 = new MqttPublishClient2();
+        MqttPublishClient2 client = new MqttPublishClient2();
         stopRecognitionSemaphore = new Semaphore(0);
-//        MqttPublishClient2 client = new MqttPublishClient2();
         SpeechConfig config = SpeechConfig.fromSubscription("06a7558e68a142f8838f80035deb6ad3", "koreacentral");
         System.out.println(filePath);
         PullAudioInputStreamCallback callback = new WavStream(new FileInputStream(filePath));
 
         AudioConfig audioInput = AudioConfig.fromStreamInput(callback);
-        // Creates a speech recognizer using audio stream input.
         SpeechRecognizer recognizer = new SpeechRecognizer(config, audioInput);
 
         {
-            // Subscribes to events.
             recognizer.recognizing.addEventListener((s, e) -> {
                 System.out.println("RECOGNIZING: Text=" + e.getResult().getText());
-                if(e.getResult().getText().contains("help")){
-                    client2.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
+                if (e.getResult().getText().contains("help")) {
+                    client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
                 } else {
-                    client2.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
+                    client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
                 }
             });
 
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
                     if (e.getResult().getText().contains("help")) {
-                        client2.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
+                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
                         System.out.println(e.getResult().getText());
                     } else {
-                        client2.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
+                        client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
                     }
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
                 } else if (e.getResult().getReason() == ResultReason.NoMatch) {

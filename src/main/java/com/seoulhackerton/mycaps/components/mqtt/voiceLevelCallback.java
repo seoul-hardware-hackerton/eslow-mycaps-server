@@ -18,7 +18,7 @@ public class voiceLevelCallback implements MqttCallback {
         for (byte b : voiceLevel) {
             double a = ((double) (b));
             System.out.println(a);
-            if (a > 2) {
+            if (a >= 1) {
                 sendAlarm(client);
             } else {
                 normalAlarm(client);
@@ -33,15 +33,6 @@ public class voiceLevelCallback implements MqttCallback {
     private void sendAlarm(MqttPublishClient client) {
         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
         //TODO 텔레그램, MQTT 알람.
-    }
-
-
-    private void notifyToMbed() {
-        //TODO MBed
-    }
-
-    private void notifyToTelegram() {
-        //TODO Telegram
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
