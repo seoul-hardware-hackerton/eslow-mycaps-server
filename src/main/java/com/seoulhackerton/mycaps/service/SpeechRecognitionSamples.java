@@ -1,5 +1,7 @@
 package com.seoulhackerton.mycaps.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.cognitiveservices.speech.CancellationReason;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
@@ -10,16 +12,17 @@ import com.seoulhackerton.mycaps.Constant;
 import com.seoulhackerton.mycaps.domain.AzureVoice;
 import com.seoulhackerton.mycaps.domain.WavStream;
 import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import com.seoulhackerton.mycaps.service.telegram.JsonResult;
+import com.seoulhackerton.mycaps.util.DataMap;
+import com.seoulhackerton.mycaps.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
@@ -33,20 +36,19 @@ public class SpeechRecognitionSamples {
     @Autowired
     static AzureVoice voiceConfig;
 
-    @Autowired
-    static CoreTelegramService messageService;
 
     private static void sendTelegram(String text) {
-        System.out.println("sendTelegram");
+        Core core = new Core();
         String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
+        System.out.println("sendTelegram");
         String sb = url + URLEncoder.encode(text);
-        messageService.sendMsg(sb);
+        core.sendMsg(sb);
     }
 
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync(String filePath, MqttPublishClient2 client) throws InterruptedException, ExecutionException, FileNotFoundException {
         stopRecognitionSemaphore = new Semaphore(0);
-        SpeechConfig config = SpeechConfig.fromSubscription("06a7558e68a142f8838f80035deb6ad3", "koreacentral");
+        SpeechConfig config = SpeechConfig.fromSubscription("1201845b3cf0469392de0f164dcd9a31", "koreacentral");
         System.out.println(filePath);
         PullAudioInputStreamCallback callback = new WavStream(new FileInputStream(filePath));
 
@@ -67,12 +69,10 @@ public class SpeechRecognitionSamples {
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
                     if (e.getResult().getText().contains("help")) {
-                        System.out.println("Hi");
-                        sendTelegram("Help 살려주세요 텔그래");
+                        sendTelegram("도움을 요청하고 있습니다!");
                         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
                         System.out.println(e.getResult().getText());
                     } else {
-                        System.out.println("Hi22222");
                         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
                     }
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
@@ -113,6 +113,31 @@ public class SpeechRecognitionSamples {
             // Stops recognition.
             recognizer.stopContinuousRecognitionAsync().get();
         }
+    }
+}
+
+class Core {
+
+    protected ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final Logger logger = LoggerFactory.getLogger(CoreTelegramService.class);
+
+    public JsonResult sendMsg(String url) {
+        DataMap dataMap = new DataMap();
+        DataMap result = new DataMap();
+
+        try {
+            String response = Util.sendRequest(url);
+            result = objectMapper.readValue(response, new TypeReference<DataMap>() {
+            });
+
+        } catch (IOException e) {
+            logger.info("faultStatus push faile");
+        }
+
+        logger.info("연동 결과 : {}", result);
+        return new JsonResult(1, null, dataMap);
+
     }
 }
 
