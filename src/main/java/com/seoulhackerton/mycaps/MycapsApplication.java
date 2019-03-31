@@ -1,5 +1,6 @@
 package com.seoulhackerton.mycaps;
 
+import com.seoulhackerton.mycaps.components.mqtt.VoiceSender;
 import com.seoulhackerton.mycaps.components.mqtt.audioWavCallback;
 import com.seoulhackerton.mycaps.components.mqtt.voiceLevelCallback;
 import com.seoulhackerton.mycaps.service.MqttPublishClient;
@@ -44,7 +45,8 @@ public class MycapsApplication {
         System.out.println("== START VOICE LEVEL SUBSCRIBER ==");
         String url = Constant.ServerURI;
         String topic = Constant.VOICE_MQTT_TOPIC;
-        MqttCallback callback = new voiceLevelCallback();
+
+        MqttCallback callback = new voiceLevelCallback(new VoiceSender());
         setMqttConfig(url, topic, callback);
     }
 
