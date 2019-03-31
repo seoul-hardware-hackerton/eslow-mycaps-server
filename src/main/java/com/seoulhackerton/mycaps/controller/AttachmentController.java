@@ -74,7 +74,6 @@ public class AttachmentController {
             System.out.println("1." + destinationFile);
             System.out.println("2." + sourceFileName + sourceFilenameExtension);
         } while (destinationFile.exists());
-        //TODO sourceFile 로 바로 다이렉트로 꽂히게 수정할 것.
         sourceFile.transferTo(destinationFile);
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -150,7 +149,7 @@ class MqttPublishClient2 {
 
         try {
 
-            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", "scout-sub-test", persistence);
+            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", RandomStringUtils.randomAlphanumeric(5), persistence);
             MqttConnectOptions connOpts = new MqttConnectOptions();
             //http://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages
             connOpts.setCleanSession(true);
