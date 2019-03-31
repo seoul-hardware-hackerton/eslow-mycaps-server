@@ -20,6 +20,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +64,7 @@ public class AttachmentController {
         String sourceFilenameExtension = FilenameUtils.getExtension(sourceFileName);
         File destinationFile;
         String destinationFileName;
-        MqttPublishClient client = new MqttPublishClient();
+        MqttPublishClient2 client = new MqttPublishClient2();
 
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFilenameExtension;
@@ -105,7 +110,7 @@ public class AttachmentController {
                 System.out.println(value.toString());
                 //TODO 이미지 테스트해서 나오는 결과값으로 롤 설정. / Telegram Message Send. 위험하다는 메세지.
                 if (value.getDescription().getTags().contains("laying")) {
-                    sendTelegram("쓰러진 사람이 있습니다. 여기 주소는 XXXX");
+                    sendTelegram("이곳에 쓰러진 사람이 있습니다. 여기 주소는 서울하드웨어해커톤이 열리는 서울시 금천구 디지털로 9길 90 입니다.");
                     client.send("eslow/alarm", "1");
                 }
             }
@@ -129,5 +134,37 @@ public class AttachmentController {
         private long fileSize;
         private String fileContentType;
         private String attachmentUrl;
+    }
+}
+
+class MqttPublishClient2 {
+
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(com.seoulhackerton.mycaps.service.MqttPublishClient.class);
+
+//    @Autowired
+//    MqttProperties mqttProperties;
+
+    public void send(String topic, String content) {
+        MemoryPersistence persistence = new MemoryPersistence();
+        MqttClient sampleClient = null;
+
+        try {
+
+            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", "scout-sub-test", persistence);
+            MqttConnectOptions connOpts = new MqttConnectOptions();
+            //http://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages
+            connOpts.setCleanSession(true);
+
+            sampleClient.connect(connOpts);
+            logger.info("send(): Publishing message: " + content + " to topic: " + topic);
+            MqttMessage message = new MqttMessage(content.getBytes());
+            message.setQos(Integer.parseInt("2"));
+            message.setRetained(Boolean.FALSE);
+
+            sampleClient.publish(topic, message);
+            sampleClient.disconnect();
+        } catch (MqttException e) {
+            logger.info("Error on send with MqttClient...");
+        }
     }
 }

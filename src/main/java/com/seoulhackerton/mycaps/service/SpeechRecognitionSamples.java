@@ -45,8 +45,8 @@ public class SpeechRecognitionSamples {
 
     // Speech recognition with audio stream
     public static void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
-        MqttPublishClient2 client = new MqttPublishClient2();
         stopRecognitionSemaphore = new Semaphore(0);
+        MqttPublishClient2 client = new MqttPublishClient2();
         SpeechConfig config = SpeechConfig.fromSubscription("06a7558e68a142f8838f80035deb6ad3", "koreacentral");
         System.out.println(filePath);
         PullAudioInputStreamCallback callback = new WavStream(new FileInputStream(filePath));
@@ -58,6 +58,7 @@ public class SpeechRecognitionSamples {
             recognizer.recognizing.addEventListener((s, e) -> {
                 System.out.println("RECOGNIZING: Text=" + e.getResult().getText());
                 if (e.getResult().getText().contains("help")) {
+                    System.out.println("Hi");
                     client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
                 } else {
                     client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
@@ -67,9 +68,12 @@ public class SpeechRecognitionSamples {
             recognizer.recognized.addEventListener((s, e) -> {
                 if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
                     if (e.getResult().getText().contains("help")) {
+                        System.out.println("Hi");
+                        sendTelegram("Help 살려주세요 텔그래");
                         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.MBED_BEEF_SOUND));
                         System.out.println(e.getResult().getText());
                     } else {
+                        System.out.println("Hi22222");
                         client.send(Constant.ALARM_MQTT_TOPIC, String.valueOf(Constant.NONE));
                     }
                     System.out.println("RECOGNIZED: Text=" + e.getResult().getText());
