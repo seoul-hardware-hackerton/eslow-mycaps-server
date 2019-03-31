@@ -15,17 +15,20 @@ import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
 import com.seoulhackerton.mycaps.service.telegram.JsonResult;
 import com.seoulhackerton.mycaps.util.DataMap;
 import com.seoulhackerton.mycaps.util.Util;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+
 
 @Service
 public class SpeechRecognitionSamples {
@@ -39,10 +42,19 @@ public class SpeechRecognitionSamples {
 
     private static void sendTelegram(String text) {
         Core core = new Core();
+//        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
         String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
         System.out.println("sendTelegram");
         String sb = url + URLEncoder.encode(text);
         core.sendMsg(sb);
+//        core.sendPhoto(sb, text, photoPath);
+    }
+
+    private static void sendTelegramPhoto(String text, String photoPath) {
+        Core core = new Core();
+        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendPhoto";
+        System.out.println("sendTelegram");
+        String sb = url + URLEncoder.encode(text);
     }
 
     // Speech recognition with audio stream
@@ -139,5 +151,40 @@ class Core {
         return new JsonResult(1, null, dataMap);
 
     }
+
+
+    private static byte[] readBytesFromFile(String filePath) throws FileNotFoundException {
+
+        FileInputStream fileInputStream = null;
+
+        byte[] bytesArray = null;
+
+        try {
+
+            File file = new File(filePath);
+            System.out.println(file.getName());
+            bytesArray = new byte[(int) file.length()];
+
+            //read file into bytes[]
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bytesArray);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return bytesArray;
+
+    }
 }
 
+
+//

@@ -6,7 +6,6 @@ import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
 import com.seoulhackerton.mycaps.util.Util;
 import com.seoulhackerton.mycaps.domain.AzureImage;
 import com.seoulhackerton.mycaps.domain.Image.ImageRes;
-import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
@@ -56,6 +55,13 @@ public class AttachmentController {
         coreTelegramService.sendMsg(sb);
     }
 
+    private void sendTelegramPhoto(String text, String photoPath) {
+        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendPhoto";
+        System.out.println("sendTelegram");
+        String sb = url + URLEncoder.encode(text);
+        coreTelegramService.sendPhoto(sb, text, photoPath);
+    }
+
     @RequestMapping(value = "/file", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity myService(@RequestParam("file") MultipartFile sourceFile) throws IOException {
@@ -71,8 +77,6 @@ public class AttachmentController {
 //            destinationFile = new File("/home/eslow/eslow-mycaps-server/attachments/" + destinationFileName);
             String currentDirectory = System.getProperty("user.dir");
             destinationFile = new File(currentDirectory, destinationFileName);
-            System.out.println("1." + destinationFile);
-            System.out.println("2." + sourceFileName + sourceFilenameExtension);
         } while (destinationFile.exists());
         sourceFile.transferTo(destinationFile);
 
@@ -107,9 +111,9 @@ public class AttachmentController {
                 ImageRes value = mapper.readValue(jsonString, ImageRes.class);
                 System.out.println("REST Response:\n");
                 System.out.println(value.toString());
-                //TODO 이미지 테스트해서 나오는 결과값으로 롤 설정. / Telegram Message Send. 위험하다는 메세지.
                 if (value.getDescription().getTags().contains("laying")) {
-                    sendTelegram("이곳에 쓰러진 사람이 있습니다. 여기 주소는 서울하드웨어해커톤이 열리는 서울시 금천구 디지털로 9길 90 입니다.");
+
+                    sendTelegramPhoto("이곳에 쓰러진 사람이 있습니다. 여기 주소는 서울하드웨어해커톤이 열리는 서울시 금천구 디지털로 9길 90 입니다.", destinationFile.getAbsolutePath());
                     client.send("eslow/alarm", "1");
                 }
             }
