@@ -44,9 +44,8 @@ public class SpeechRecognitionSamples {
     }
 
     // Speech recognition with audio stream
-    public static void recognitionWithAudioStreamAsync(String filePath) throws InterruptedException, ExecutionException, FileNotFoundException {
+    public static void recognitionWithAudioStreamAsync(String filePath, MqttPublishClient2 client) throws InterruptedException, ExecutionException, FileNotFoundException {
         stopRecognitionSemaphore = new Semaphore(0);
-        MqttPublishClient2 client = new MqttPublishClient2();
         SpeechConfig config = SpeechConfig.fromSubscription("06a7558e68a142f8838f80035deb6ad3", "koreacentral");
         System.out.println(filePath);
         PullAudioInputStreamCallback callback = new WavStream(new FileInputStream(filePath));
@@ -117,34 +116,3 @@ public class SpeechRecognitionSamples {
     }
 }
 
-class MqttPublishClient2 {
-
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(com.seoulhackerton.mycaps.service.MqttPublishClient.class);
-
-//    @Autowired
-//    MqttProperties mqttProperties;
-
-    public void send(String topic, String content) {
-        MemoryPersistence persistence = new MemoryPersistence();
-        MqttClient sampleClient = null;
-
-        try {
-
-            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", "scout-sub-test", persistence);
-            MqttConnectOptions connOpts = new MqttConnectOptions();
-            //http://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages
-            connOpts.setCleanSession(true);
-
-            sampleClient.connect(connOpts);
-            logger.info("send(): Publishing message: " + content + " to topic: " + topic);
-            MqttMessage message = new MqttMessage(content.getBytes());
-            message.setQos(Integer.parseInt("2"));
-            message.setRetained(Boolean.FALSE);
-
-            sampleClient.publish(topic, message);
-            sampleClient.disconnect();
-        } catch (MqttException e) {
-            logger.info("Error on send with MqttClient...");
-        }
-    }
-}

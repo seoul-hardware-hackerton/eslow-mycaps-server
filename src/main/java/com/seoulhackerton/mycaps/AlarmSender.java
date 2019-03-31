@@ -1,5 +1,6 @@
 package com.seoulhackerton.mycaps;
 
+import com.seoulhackerton.mycaps.service.MqttPublishClient2;
 import com.seoulhackerton.mycaps.service.SpeechRecognitionSamples;
 
 import java.io.FileNotFoundException;
@@ -14,8 +15,9 @@ public class AlarmSender {
     public AlarmSender() {
         new Thread(() -> {
             isRunning = true;
+            MqttPublishClient2 client = new MqttPublishClient2();
             while (isRunning) {
-                setSpeechRecognitionSamples();
+                setSpeechRecognitionSamples(client);
             }
         }).start();
     }
@@ -24,11 +26,11 @@ public class AlarmSender {
         isRunning = false;
     }
 
-    public void setSpeechRecognitionSamples() {
+    public void setSpeechRecognitionSamples(MqttPublishClient2 client) {
         while (!concurrentLinkedQueue.isEmpty()) {
             String filePath = concurrentLinkedQueue.poll();
             try {
-                SpeechRecognitionSamples.recognitionWithAudioStreamAsync(filePath);
+                SpeechRecognitionSamples.recognitionWithAudioStreamAsync(filePath, client);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
