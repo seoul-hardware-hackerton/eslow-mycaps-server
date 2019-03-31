@@ -10,22 +10,40 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.PullAudioInputStreamCallback;
 import com.seoulhackerton.mycaps.Constant;
 import com.seoulhackerton.mycaps.domain.AzureVoice;
+import com.seoulhackerton.mycaps.domain.PhotoResponse;
 import com.seoulhackerton.mycaps.domain.WavStream;
 import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
 import com.seoulhackerton.mycaps.service.telegram.JsonResult;
 import com.seoulhackerton.mycaps.util.DataMap;
 import com.seoulhackerton.mycaps.util.Util;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
 
 @Service
 public class SpeechRecognitionSamples {
@@ -39,10 +57,20 @@ public class SpeechRecognitionSamples {
 
     private static void sendTelegram(String text) {
         Core core = new Core();
+//        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
         String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
         System.out.println("sendTelegram");
         String sb = url + URLEncoder.encode(text);
         core.sendMsg(sb);
+//        core.sendPhoto(sb, text, photoPath);
+    }
+
+    private static void sendTelegramPhoto(String text, String photoPath) {
+        Core core = new Core();
+        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendPhoto";
+        System.out.println("sendTelegram");
+        String sb = url + URLEncoder.encode(text);
+        core.sendPhoto(sb, text, photoPath);
     }
 
     // Speech recognition with audio stream
@@ -139,5 +167,80 @@ class Core {
         return new JsonResult(1, null, dataMap);
 
     }
+
+    public void sendPhoto(String url, String message, String filePath) {
+
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        try {
+            URIBuilder builder = new URIBuilder(url);
+
+            // Request parameters. All of them are optional.
+            builder.setParameter("chat_id", "727848241");
+            builder.setParameter("text", message);
+
+            // Prepare the URI for the REST API method.
+            URI uri = builder.build();
+            HttpPost request = new HttpPost(uri);
+            // Request headers.
+            byte[] a = readBytesFromFile(filePath);
+
+            request.setHeader("Content-Type", "multipart/form-data");
+            // Request body.
+            HttpEntity byteArrayEntity = new ByteArrayEntity(a);
+            request.setEntity(byteArrayEntity);
+
+            HttpResponse response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null) {
+                // Format and display the JSON response.
+                String jsonString = EntityUtils.toString(entity);
+                System.out.println(jsonString);
+                ObjectMapper mapper = new ObjectMapper(); // create once, reuse
+                //TODO RESPONSE
+                PhotoResponse value = mapper.readValue(jsonString, PhotoResponse.class);
+                System.out.println("REST Response:\n");
+                System.out.println(value.toString());
+            }
+        } catch (Exception e) {
+            // Display error message.
+            System.out.println(e.getMessage());
+        }
+    }
+//     Replace <Subscription Key> with your valid subscription key.
+
+    private static byte[] readBytesFromFile(String filePath) throws FileNotFoundException {
+
+        FileInputStream fileInputStream = null;
+
+        byte[] bytesArray = null;
+
+        try {
+
+            File file = new File(filePath);
+            System.out.println(file.getName());
+            bytesArray = new byte[(int) file.length()];
+
+            //read file into bytes[]
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bytesArray);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return bytesArray;
+
+    }
 }
 
+
+//
