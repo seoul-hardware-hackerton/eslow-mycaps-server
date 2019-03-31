@@ -73,11 +73,11 @@ public class CoreTelegramService extends BaseTelegramService {
                 // Format and display the JSON response.
                 String jsonString = EntityUtils.toString(entity);
                 System.out.println(jsonString);
-                ObjectMapper mapper = new ObjectMapper(); // create once, reuse
+//                ObjectMapper mapper = new ObjectMapper(); // create once, reuse
                 //TODO RESPONSE
-                PhotoResponse value = mapper.readValue(jsonString, PhotoResponse.class);
-                System.out.println("REST Response:\n");
-                System.out.println(value.toString());
+//                PhotoResponse value = mapper.readValue(jsonString, PhotoResponse.class);
+//                System.out.println("REST Response:\n");
+//                System.out.println(value.toString());
             }
         } catch (Exception e) {
             // Display error message.
