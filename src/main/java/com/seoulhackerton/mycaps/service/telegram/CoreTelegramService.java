@@ -46,57 +46,43 @@ public class CoreTelegramService extends BaseTelegramService {
 
     }
 
-//    public void sendPhoto(String url, String message, String filePath) {
-//
-//        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-//        try {
-//            URIBuilder builder = new URIBuilder(url);
-//
-//             Request parameters. All of them are optional.
-//            builder.setParameter("chat_id", "727848241");
-//            builder.setParameter("text", message);
-//
-//             Prepare the URI for the REST API method.
-//            URI uri = builder.build();
-//            HttpPost request = new HttpPost(uri);
-//            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-//            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-//            builder.addTextBody("username", "John");
-//            builder.addTextBody("password", "pass");
-//            builder.addBinaryBody("file", new File("test.txt"),
-//                    ContentType.APPLICATION_OCTET_STREAM, "file.ext");
-//
-//            HttpEntity multipart = builder.build();
-//            httpPost.setEntity(multipart);
-//
-//            CloseableHttpResponse response = client.execute(httpPost);
+    public void sendPhoto(String url, String message, String filePath) {
 
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        try {
+            URIBuilder builder = new URIBuilder(url);
+
+            // Request parameters. All of them are optional.
+            builder.setParameter("chat_id", "727848241");
+            builder.setParameter("text", message);
+
+            // Prepare the URI for the REST API method.
+            URI uri = builder.build();
+            HttpPost request = new HttpPost(uri);
             // Request headers.
-//            byte[] a = readBytesFromFile(filePath);
-//
-//            request.setHeader("Content-Type", "multipart/form-data");
-//             Request body.
-//            HttpEntity byteArrayEntity = new ByteArrayEntity(a);
-//            request.setEntity(byteArrayEntity);
-//            request.setEntity(new);
-//
-//            HttpResponse response = httpClient.execute(request);
-//            HttpEntity entity = response.getEntity();
-//
-//            if (entity != null) {
+            byte[] a = readBytesFromFile(filePath);
+
+            request.setHeader("Content-Type", "multipart/form-data");
+            // Request body.
+            HttpEntity byteArrayEntity = new ByteArrayEntity(a);
+            request.setEntity(byteArrayEntity);
+
+            HttpResponse response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null) {
                 // Format and display the JSON response.
-//                String jsonString = EntityUtils.toString(entity);
-//                System.out.println(jsonString);
+                String jsonString = EntityUtils.toString(entity);
+                System.out.println(jsonString);
 //                ObjectMapper mapper = new ObjectMapper(); // create once, reuse
                 //TODO RESPONSE
 //                PhotoResponse value = mapper.readValue(jsonString, PhotoResponse.class);
 //                System.out.println("REST Response:\n");
 //                System.out.println(value.toString());
-//            }
-//        } catch (Exception e) {
-//             Display error message.
-//            System.out.println(e.getMessage());
-//        }
-//    }
-//}
-//
+            }
+        } catch (Exception e) {
+            // Display error message.
+            System.out.println(e.getMessage());
+        }
+    }
+}

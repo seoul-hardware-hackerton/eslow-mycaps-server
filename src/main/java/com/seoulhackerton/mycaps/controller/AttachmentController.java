@@ -112,7 +112,6 @@ public class AttachmentController {
                 System.out.println("REST Response:\n");
                 System.out.println(value.toString());
                 if (value.getDescription().getTags().contains("laying")) {
-
                     sendTelegramPhoto("이곳에 쓰러진 사람이 있습니다. 여기 주소는 서울하드웨어해커톤이 열리는 서울시 금천구 디지털로 9길 90 입니다.", destinationFile.getAbsolutePath());
                     client.send("eslow/alarm", "1");
                 }
