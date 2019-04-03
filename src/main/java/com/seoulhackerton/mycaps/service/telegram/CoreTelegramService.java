@@ -45,7 +45,7 @@ public class CoreTelegramService extends BaseTelegramService {
         return new JsonResult(1, null, dataMap);
 
     }
-
+    // TODO 미완성으로 프로젝트 종료
     public void sendPhoto(String url, String message, String filePath) {
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -75,7 +75,7 @@ public class CoreTelegramService extends BaseTelegramService {
                 String jsonString = EntityUtils.toString(entity);
                 System.out.println(jsonString);
 //                ObjectMapper mapper = new ObjectMapper(); // create once, reuse
-                //TODO RESPONSE
+                // TODO RESPONSE
 //                PhotoResponse value = mapper.readValue(jsonString, PhotoResponse.class);
 //                System.out.println("REST Response:\n");
 //                System.out.println(value.toString());
