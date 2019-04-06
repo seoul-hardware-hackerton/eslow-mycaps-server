@@ -1,8 +1,6 @@
 package com.seoulhackerton.mycaps.components.mqtt;
 
 import com.seoulhackerton.mycaps.AlarmSender;
-import com.seoulhackerton.mycaps.service.SpeechRecognitionSamples;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -12,16 +10,14 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 
 import static javax.sound.sampled.AudioFileFormat.Type.WAVE;
 
-public class audioWavCallback implements MqttCallback {
+public class AudioWavCallback implements MqttCallback {
 
     private AlarmSender alarmSender;
 
-    public audioWavCallback(AlarmSender alarmSender) {
+    public AudioWavCallback(AlarmSender alarmSender) {
         this.alarmSender = alarmSender;
     }
 

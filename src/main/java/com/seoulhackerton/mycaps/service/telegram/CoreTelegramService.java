@@ -1,8 +1,6 @@
 package com.seoulhackerton.mycaps.service.telegram;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seoulhackerton.mycaps.domain.PhotoResponse;
 import com.seoulhackerton.mycaps.util.Util;
 import com.seoulhackerton.mycaps.util.DataMap;
 import org.apache.http.HttpEntity;

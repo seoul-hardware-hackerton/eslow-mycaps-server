@@ -1,17 +1,14 @@
 package com.seoulhackerton.mycaps.components.mqtt;
 
-import com.seoulhackerton.mycaps.AlarmSender;
-import com.seoulhackerton.mycaps.Constant;
-import com.seoulhackerton.mycaps.service.MqttPublishClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-public class voiceLevelCallback implements MqttCallback {
+public class VoiceLevelCallback implements MqttCallback {
 
     private VoiceSender alarmSender;
 
-    public voiceLevelCallback(VoiceSender alarmSender) {
+    public VoiceLevelCallback(VoiceSender alarmSender) {
         this.alarmSender = alarmSender;
     }
 

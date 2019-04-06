@@ -2,6 +2,7 @@ package com.seoulhackerton.mycaps.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seoulhackerton.mycaps.Constant;
+import com.seoulhackerton.mycaps.service.MqttPublishClient2;
 import com.seoulhackerton.mycaps.service.telegram.CoreTelegramService;
 import com.seoulhackerton.mycaps.util.Util;
 import com.seoulhackerton.mycaps.domain.AzureImage;
@@ -136,37 +137,5 @@ public class AttachmentController {
         private long fileSize;
         private String fileContentType;
         private String attachmentUrl;
-    }
-}
-
-class MqttPublishClient2 {
-
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(com.seoulhackerton.mycaps.service.MqttPublishClient.class);
-
-//    @Autowired
-//    MqttProperties mqttProperties;
-
-    public void send(String topic, String content) {
-        MemoryPersistence persistence = new MemoryPersistence();
-        MqttClient sampleClient = null;
-
-        try {
-
-            sampleClient = new MqttClient("tcp://" + "52.141.36.28" + ":" + "1883", RandomStringUtils.randomAlphanumeric(5), persistence);
-            MqttConnectOptions connOpts = new MqttConnectOptions();
-            //http://www.hivemq.com/blog/mqtt-essentials-part-7-persistent-session-queuing-messages
-            connOpts.setCleanSession(true);
-
-            sampleClient.connect(connOpts);
-            logger.info("send(): Publishing message: " + content + " to topic: " + topic);
-            MqttMessage message = new MqttMessage(content.getBytes());
-            message.setQos(Integer.parseInt("2"));
-            message.setRetained(Boolean.FALSE);
-
-            sampleClient.publish(topic, message);
-            sampleClient.disconnect();
-        } catch (MqttException e) {
-            logger.info("Error on send with MqttClient...");
-        }
     }
 }
