@@ -33,7 +33,7 @@ class EmployeeController {
 
     private void sendTelegram(String text) {
         System.out.println("sendTelegram");
-        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
+        String url = "https://api.telegram.org/botToken/sendMessage?chat_id=727848241&text=";
         String sb = url + URLEncoder.encode(text);
         coreTelegramService.sendMsg(sb);
     }
