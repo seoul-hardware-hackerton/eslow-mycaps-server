@@ -42,8 +42,8 @@ public class SpeechRecognitionSamples {
 
     private static void sendTelegram(String text) {
         Core core = new Core();
-//        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
-        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendMessage?chat_id=727848241&text=";
+//        String url = "https://api.telegram.org/botToken/sendMessage?chat_id=727848241&text=";
+        String url = "https://api.telegram.org/botToken/sendMessage?chat_id=727848241&text=";
         System.out.println("sendTelegram");
         String sb = url + URLEncoder.encode(text);
         core.sendMsg(sb);
