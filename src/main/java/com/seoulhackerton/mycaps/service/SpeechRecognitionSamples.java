@@ -52,7 +52,7 @@ public class SpeechRecognitionSamples {
 
     private static void sendTelegramPhoto(String text, String photoPath) {
         Core core = new Core();
-        String url = "https://api.telegram.org/bot818348795:AAE3-dC2J1POYDmss1JZHURDgP_R5wqx4m0/sendPhoto";
+        String url = "https://api.telegram.org/botToken/sendPhoto";
         System.out.println("sendTelegram");
         String sb = url + URLEncoder.encode(text);
     }
